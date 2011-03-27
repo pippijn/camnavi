@@ -1,5 +1,6 @@
 #include "fourier.h"
 #include "complex_image.h"
+#include "timer.h"
 
 using cv::Mat;
 
@@ -22,6 +23,8 @@ void
 dft_filter (Mat const &src, Mat const &filter, Mat *dst, Mat *plot)
 {
   assert (src.type () == CV_8UC1);
+
+  timer const T (__func__);
 
   // forward FT
   Mat fourier (src.size (), CV_64FC2);

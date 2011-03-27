@@ -1,23 +1,22 @@
 #include <iostream>
 #include <cstdio>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "imagereceiver.h"
 
 ImageReceiver::ImageReceiver ()
-  : src (NULL)
+  : src (new cv::Mat)
 {
-  cvNamedWindow ("Live Image", 1);
+  cv::namedWindow ("Live Image", 1);
   setStreaming (true);
   setResolution (640, 480);
 }
 
 ImageReceiver::~ImageReceiver ()
 {
-  cvReleaseImage (&src);
-  cvDestroyWindow ("Live Image");
+  cv::destroyWindow ("Live Image");
+  delete src;
 }
 
 void
@@ -29,13 +28,10 @@ ImageReceiver::imageReceivedEvent (const unsigned char *data,
                                    unsigned int bitsPerChannel,
                                    unsigned int step)
 {
-  CvSize size = { width, height };
+  src->create (cv::Size (width, height), CV_8UC3);
 
-  if (src == NULL)
-    src = cvCreateImage (size, IPL_DEPTH_8U, 3);
-
-  memcpy (src->imageData, data, dataSize);
+  memcpy (src->ptr (), data, dataSize);
 
   puts ("Image received");
-  cvShowImage ("Live Image", src);
+  imshow ("Live Image", *src);
 }

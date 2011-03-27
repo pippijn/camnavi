@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <opencv/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <rec/core_lt/Timer.h>
 
@@ -54,16 +54,16 @@ Robot::pimpl::run ()
   rec::core_lt::Timer timer;
   timer.start ();
 
-  const float speed = 200.0f;
-  const float rotationSpeed = 36.0f;
+  float const speed = 200.0f;
+  float const rotationSpeed = 36.0f;
 
   while (isConnected ())
     {
-      float rot = rotationSpeed * (2.0f * (float)M_PI / 360.0f) * (timer.msecsElapsed () / 1000.0f);
+      float const rot = rotationSpeed * (2.0f * (float)M_PI / 360.0f) * (timer.msecsElapsed () / 1000.0f);
       drive.setVelocity (cos (rot) * speed, sin (rot) * speed, 5.0f);
       waitForUpdate ();      //wait until actor set values are transmitted and new sensor readings are available
 
-      char c = cvWaitKey (100);
+      char const c = cv::waitKey (100);
 
       switch (c)
         {

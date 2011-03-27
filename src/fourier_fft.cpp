@@ -1,6 +1,8 @@
 #include "fourier.h"
 #include "timer.h"
 
+#include <opencv2/core/core.hpp>
+
 #include <fftw3.h>
 
 using cv::Mat;
@@ -81,7 +83,7 @@ fft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *pl
   int const width  = src.size ().width;
   int const height = src.size ().height;
 
-  timer const t ("fourier transform");
+  timer const T (__func__);
 
   /* load img1's data to fftw input */
   for (int i = 0, k = 0; i < height; i++)

@@ -1,4 +1,5 @@
 /doc
-/images
 /client
+/images
 *.[od]
+*.jpg

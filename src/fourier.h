@@ -1,6 +1,6 @@
 #pragma once
 
-#include <opencv/cv.h>
+#include "cvfwd.h"
 
 namespace detail
 {
@@ -13,5 +13,5 @@ namespace detail
   void dft_plot (cv::Mat const &src, cv::Mat &dst);
 }
 
-void dft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *plot = NULL);
-void fft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *plot = NULL);
+void dft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *plot = 0);
+void fft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *plot = 0);

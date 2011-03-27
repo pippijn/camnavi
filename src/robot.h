@@ -9,7 +9,7 @@ struct Robot
 
   void run ();
 
-
+private:
   struct pimpl;
-  std::auto_ptr<pimpl> impl;
+  std::auto_ptr<pimpl> const impl;
 };

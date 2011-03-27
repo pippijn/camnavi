@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ffmpeg -r 4 -b 360000 -i %03d.jpg test.mp4

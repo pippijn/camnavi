@@ -1,5 +1,5 @@
 #pragma once
 
-#include <opencv/cv.h>
+#include "cvfwd.h"
 
 void mser (cv::Mat const &src, cv::Mat &dst);

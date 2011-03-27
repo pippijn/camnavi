@@ -2,7 +2,7 @@
 
 #include <boost/array.hpp>
 
-#include <opencv/cv.h>
+#include <opencv2/core/core.hpp>
 
 template<int Cols>
 struct kernel_base

@@ -2,12 +2,15 @@
 
 #include <cstdio>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "fourier.h"
 #include "hough.h"
 #include "mser.h"
+#include "surf.h"
+#include "sift.h"
+#include "stardetector.h"
+#include "goodfeatures.h"
 
 using cv::Mat;
 
@@ -80,7 +83,8 @@ main (int argc, char *argv[])
       sprintf (filename, "images/%03d.jpg", i);
 
       Mat const src = cv::imread (filename, CV_LOAD_IMAGE_GRAYSCALE);
-      dst.create (src.size (), src.type ());
+      //dst.create (src.size (), src.type ());
+      dst = Mat::zeros (src.size (), src.type ());
       //equalizeHist (src, src);
       imshow ("source", src);
 
@@ -89,10 +93,17 @@ main (int argc, char *argv[])
       //fft_filter (src, frequency_filter, NULL, &dst);
       //linedet (src, dst);
       //transform (src, dst);
-      mser (src, dst);
+      //mser (src, dst);
+      //surf (src, dst);
+      //stardetector (src, dst);
+      dst = src;
+      goodfeatures (src, dst);
+      //sift (src, dst);
+      sprintf (filename, "output/%03d.jpg", i);
+      imwrite (filename, dst);
       imshow ("transformed", dst);
 
-      switch (cv::waitKey (5000))
+      switch (cv::waitKey (50))
         {
         case 'q':
           return 0;

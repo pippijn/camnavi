@@ -1,12 +1,18 @@
 #include "mser.h"
 
+#include <opencv2/features2d/features2d.hpp>
+
 #include <boost/foreach.hpp>
+
+#include "timer.h"
 
 using cv::Mat;
 
 void
 mser (Mat const &src, Mat &dst)
 {
+  timer const T (__func__);
+
   cv::MSER mser (
                  /* delta */ 3,
                  /* min_area */ 60,

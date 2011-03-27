@@ -1,6 +1,6 @@
 #pragma once
 
-#include <opencv/cv.h>
+#include "cvfwd.h"
 
 struct line_detector
 {

@@ -1,27 +1,14 @@
 #include "hough.h"
 
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include <cstdio>
 
 #include <boost/foreach.hpp>
 
-using cv::Mat;
+#include "timer.h"
 
-namespace cv
-{
-  void
-  HoughLinesP (Mat &image, vector<Vec4i> &lines,
-               double rho, double theta, int threshold,
-               double minLineLength, double maxGap)
-  {
-    CvMemStorage *storage = cvCreateMemStorage (0);
-    CvMat _image = image;
-    CvSeq *seq = cvHoughLines2 (&_image, storage, CV_HOUGH_PROBABILISTIC,
-                                rho, theta, threshold, minLineLength, maxGap);
-    printf ("%d\n", seq->total);
-    Seq<Vec4i> (seq).copyTo (lines);
-    cvReleaseMemStorage (&storage);
-  }
-}
+using cv::Mat;
 
 line_detector::line_detector ()
   // canny parameters
@@ -42,6 +29,8 @@ line_detector::line_detector ()
 void
 line_detector::operator () (Mat const &src, Mat &colour_dst)
 {
+  timer const T (__func__);
+
   // Detect edges using the Canny algorithm
   printf ("Canny (src, dst, %g, %g, %d, %s);\n", threshold1, threshold2, apertureSize, L2gradient ? "true" : "false");
   Mat dst (src.size (), CV_8UC1);
