@@ -5,99 +5,53 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
-#include "laplace.h"
+#include "fourier.h"
+#include "hough.h"
+#include "mser.h"
 
-template<int N>
-static IplImage *transform (IplImage const *src);
+using cv::Mat;
 
-template<>
-IplImage *
-transform<0> (IplImage const *src)
+#if 0
+#include "kernel.h"
+
+static void
+transform (Mat const &src, Mat &dst)
 {
-  IplImage *Fourier; //žµÀïÒ¶ÏµÊý
-  IplImage *dst;
-  IplImage *ImageRe;
-  IplImage *ImageIm;
-  IplImage *Image;
-  IplImage *ImageDst;
-  double m, M;
-  double scale;
-  double shift;
+  // Make sure the destination is of the same type as the source.
+  dst.create (src.size (), src.type ());
 
-  Fourier = cvCreateImage (cvGetSize (src), IPL_DEPTH_64F, 2);
-  dst = cvCreateImage (cvGetSize (src), IPL_DEPTH_64F, 2);
-  ImageRe = cvCreateImage (cvGetSize (src), IPL_DEPTH_64F, 1);
-  ImageIm = cvCreateImage (cvGetSize (src), IPL_DEPTH_64F, 1);
-  Image = cvCreateImage (cvGetSize (src), src->depth, src->nChannels);
-  ImageDst = cvCreateImage (cvGetSize (src), src->depth, src->nChannels);
-  fft2 (src, Fourier);              //žµÀïÒ¶±ä»»
-  fft2shift (Fourier, Image);       //ÖÐÐÄ»¯
-  cvDFT (Fourier, dst, CV_DXT_INV_SCALE, 0); //ÊµÏÖžµÀïÒ¶Äæ±ä»»£¬²¢¶Ôœá¹ûœøÐÐËõ·Å
-  cvSplit (dst, ImageRe, ImageIm, 0, 0);
-
-  //¶ÔÊý×éÃ¿žöÔªËØÆœ·œ²¢ŽæŽ¢ÔÚµÚ¶þžö²ÎÊýÖÐ
-  cvPow (ImageRe, ImageRe, 2);
-  cvPow (ImageIm, ImageIm, 2);
-  cvAdd (ImageRe, ImageIm, ImageRe, NULL);
-  cvPow (ImageRe, ImageRe, 0.5);
-  cvMinMaxLoc (ImageRe, &m, &M, NULL, NULL, NULL);
-  scale = 255 / (M - m);
-  shift = -m * scale;
-  //œ«shiftŒÓÔÚImageRež÷ÔªËØ°Ž±ÈÀýËõ·ÅµÄœá¹ûÉÏ£¬ŽæŽ¢ÎªImageDst
-  cvConvertScale (ImageRe, ImageDst, scale, shift);
-
-  cvReleaseImage (&Image);
-  cvReleaseImage (&ImageIm);
-  cvReleaseImage (&ImageRe);
-  cvReleaseImage (&Fourier);
-  cvReleaseImage (&dst);
-
-  return ImageDst;
+#if 0
+  // Gaussian convolution kernel
+  filter2D (src, dst, 0,
+            Kernel
+            (1,  4,  7,  4, 1)
+            (4, 16, 26, 16, 4)
+            (7, 26, 41, 26, 7)
+            (4, 16, 26, 16, 4)
+            (1,  4,  7,  4, 1)
+            / 273);
+#elif 1
+  // Edge detect vertical
+  filter2D (src, dst, 0,
+            Kernel
+            (-1, 0, 1)
+            (-1, 0, 1)
+            (-1, 0, 1)
+           );
+#else
+  // Edge detect horizontal
+  filter2D (src, dst, 0,
+            Kernel
+            (-1, -1, -1)
+            ( 0,  0,  0)
+            ( 1,  1,  1)
+           );
+#endif
 }
-
-static int C1 = 1;
-static int C2 = 5;
-
-static int c1 = 5;
-static int c2 = 50;
-
-static int H1 = 18;
-static int H2 = 8;
-static int H3 = 3;
-static int H4 = 1;
-
-static int h1 = 180;
-static int h2 = 80;
-static int h3 = 30;
-static int h4 = 10;
-
-template<>
-IplImage *
-transform<1> (IplImage const *src)
-{
-  IplImage *dst = cvCreateImage (cvGetSize (src), 8, 1);
-  IplImage *color_dst = cvCreateImage (cvGetSize (src), 8, 3);
-
-  CvMemStorage *storage = cvCreateMemStorage (0);
-
-  printf ("cvCanny (src, dst, %d, %d, 3);\n", c1, c2);
-  cvCanny (src, dst, c1, c2, 3);
-  cvCvtColor (dst, color_dst, CV_GRAY2BGR);
-
-  printf ("cvHoughLines2 (..., CV_PI / %d, %d, %d, %d);\n", h1, h2, h3, h4);
-  CvSeq *lines = cvHoughLines2 (dst, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI / h1, h2, h3, h4);
-  for (int i = 0; i < lines->total; i++)
-    {
-      CvPoint *line = (CvPoint *)cvGetSeqElem (lines, i);
-      cvLine (color_dst, line[0], line[1], CV_RGB (255, 0, 0), 3, 8);
-    }
-
-  return color_dst;
-}
+#endif
 
 int
 main (int argc, char *argv[])
-try
 {
 #if 0
   std::string hostname = "172.26.1.1";
@@ -109,10 +63,14 @@ try
   Robot robot (hostname);
   robot.run ();
 #else
-  cvNamedWindow ("source", 1);
-  cvNamedWindow ("transformed", 1);
+  cv::namedWindow ("source");
+  //cv::namedWindow ("transformed");
+
+  Mat const frequency_filter = cv::imread ("filter.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+  line_detector linedet;
 
   bool paused = false;
+  Mat dst;
   for (int i = 0; i <= 395; i++)
     {
       if (paused)
@@ -121,15 +79,20 @@ try
       char filename[20];
       sprintf (filename, "images/%03d.jpg", i);
 
-      IplImage *src = cvLoadImage (filename, 0);
-      cvShowImage ("source", src);
-      IplImage *dst = transform<1> (src);
-      cvReleaseImage (&src);
+      Mat const src = cv::imread (filename, CV_LOAD_IMAGE_GRAYSCALE);
+      dst.create (src.size (), src.type ());
+      //equalizeHist (src, src);
+      imshow ("source", src);
 
-      cvShowImage ("transformed", dst);
-      cvReleaseImage (&dst);
+      //dft_filter (src, frequency_filter, &dst);
+      //fft_filter (src, frequency_filter, &dst);
+      //fft_filter (src, frequency_filter, NULL, &dst);
+      //linedet (src, dst);
+      //transform (src, dst);
+      mser (src, dst);
+      imshow ("transformed", dst);
 
-      switch (cvWaitKey (100))
+      switch (cv::waitKey (5000))
         {
         case 'q':
           return 0;
@@ -140,31 +103,35 @@ try
           i++;
           break;
 
-        case 'p': c1 -= C1; break;
-        case 'i': c1 += C1; break;
-        case 'y': c2 -= C2; break;
-        case 'u': c2 += C2; break;
+          static int const C1 = 1;
+          static int const C2 = 5;
 
-        case 'g': h1 -= H1; break;
-        case 'd': h1 += H1; break;
-        case 'c': h2 -= H2; break;
-        case 'r': h2 += H2; break;
-        case 't': h3 -= H3; break;
-        case 'n': h3 += H3; break;
-        case 'z': h4 -= H4; break;
-        case 's': h4 += H4; break;
+          static int const H1 = 18;
+          static int const H2 = 8;
+          static int const H3 = 3;
+          static int const H4 = 1;
+        case 'p': linedet.threshold1 -= C1; break;
+        case 'i': linedet.threshold1 += C1; break;
+        case 'y': linedet.threshold2 -= C2; break;
+        case 'u': linedet.threshold2 += C2; break;
+
+        case 'f': linedet.rho -= H1; break;
+        case 'h': linedet.rho += H1; break;
+        case 'g': linedet.theta -= H2; break;
+        case 'd': linedet.theta += H2; break;
+        case 'c': linedet.threshold -= H3; break;
+        case 'r': linedet.threshold += H3; break;
+        case 't': linedet.minLineLength -= H4; break;
+        case 'n': linedet.minLineLength += H4; break;
+        case 'z': linedet.maxLineGap -= H4; break;
+        case 's': linedet.maxLineGap += H4; break;
 
         case ' ':
           paused = !paused;
           break;
         }
     }
-  cvDestroyWindow ("Live Image");
 #endif
 
   return 0;
-}
-catch (cv::Exception const &e)
-{
-  puts (e.what ());
 }

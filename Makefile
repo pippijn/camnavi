@@ -1,11 +1,11 @@
-QT = QtCore QtNetwork QtXml ImageMagick++
+PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3
 
 CXXFLAGS := -Wall -ggdb3
-CPPFLAGS := -MD -Isrc $(shell pkg-config $(QT) --cflags)
+CPPFLAGS := -MD -Isrc $(shell pkg-config $(PKGS) --cflags)
 CPPFLAGS += -DTIXML_USE_STL -DTIXML_USE_TICPP
 
 LDFLAGS := -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lMagick++
-LDFLAGS += $(shell pkg-config $(QT) --libs)
+LDFLAGS += $(shell pkg-config $(PKGS) --libs)
 LDFLAGS += -lhighgui -lcv -lcxcore
 
 MOC_SOURCES :=						\
