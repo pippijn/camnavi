@@ -27,12 +27,12 @@ line_detector::line_detector ()
 }
 
 void
-line_detector::operator () (Mat const &src, Mat &colour_dst)
+line_detector::detect_lines (Mat const &src, Mat &colour_dst)
 {
   timer const T (__func__);
 
   // Detect edges using the Canny algorithm
-  printf ("Canny (src, dst, %g, %g, %d, %s);\n", threshold1, threshold2, apertureSize, L2gradient ? "true" : "false");
+  //printf ("Canny (src, dst, %g, %g, %d, %s);\n", threshold1, threshold2, apertureSize, L2gradient ? "true" : "false");
   Mat dst (src.size (), CV_8UC1);
   Canny (src, dst, threshold1, threshold2, apertureSize, L2gradient);
 
@@ -41,7 +41,7 @@ line_detector::operator () (Mat const &src, Mat &colour_dst)
   cvtColor (dst, colour_dst, CV_GRAY2BGR);
 
   // Find lines on the original binary image created by Canny
-  printf ("HoughLinesP (src, lines, %g, CV_PI / %g, %d, %g, %g);\n", rho, theta, threshold, minLineLength, maxLineGap);
+  //printf ("HoughLinesP (src, lines, %g, CV_PI / %g, %d, %g, %g);\n", rho, theta, threshold, minLineLength, maxLineGap);
   cv::vector<cv::Vec4i> lines;
   HoughLinesP (dst, lines, rho, CV_PI / theta, threshold, minLineLength, maxLineGap);
 
@@ -56,3 +56,8 @@ line_detector::operator () (Mat const &src, Mat &colour_dst)
     }
 }
 
+void
+line_detector::operator () (Mat const &src, Mat &colour_dst)
+{
+  detect_lines (src, colour_dst);
+}

@@ -19,18 +19,6 @@ sift (Mat const &src, Mat &dst)
 {
   timer const T (__func__);
 
-#if 1
-  equalizeHist (src, (Mat&)src);
-  IplImage csrc = src;
-  feature *feat;
-
-  int const nfeat = sift_features (&csrc, &feat);
-
-  dst = src;
-  draw_features (&csrc, feat, nfeat);
-
-  free (feat);
-#else
   cv::SIFT sift;
 
   cv::vector<cv::KeyPoint> keypoints;
@@ -40,5 +28,20 @@ sift (Mat const &src, Mat &dst)
     {
       dst.at<uchar> (p.pt.y, p.pt.x) = 255;
     }
-#endif
+}
+
+void
+fast_sift (Mat const &src, Mat &dst)
+{
+  timer const T (__func__);
+
+  IplImage csrc = src;
+  feature *feat;
+
+  int const nfeat = sift_features (&csrc, &feat);
+
+  dst = src;
+  draw_features (&csrc, feat, nfeat);
+
+  free (feat);
 }

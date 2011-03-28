@@ -32,5 +32,6 @@ struct line_detector
 
   line_detector ();
 
+  void detect_lines (cv::Mat const &src, cv::Mat &color_dst);
   void operator () (cv::Mat const &src, cv::Mat &color_dst);
 };

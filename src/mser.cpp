@@ -28,7 +28,6 @@ mser (Mat const &src, Mat &dst)
   cv::vector<cv::vector<cv::Point> > msers;
   mser (src, msers, cv::Mat ());
 
-  dst = Mat::zeros (src.size (), src.type ());
   BOOST_FOREACH (cv::vector<cv::Point> const &r, msers)
     {
       BOOST_FOREACH (cv::Point const &p, r)

@@ -5,7 +5,7 @@ CFLAGL		:= -O3
 CPPFLAGS	:= -MD -Isrc $(shell pkg-config $(PKGS) --cflags)
 CPPFLAGS	+= -DTIXML_USE_STL -DTIXML_USE_TICPP
 
-LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lMagick++
+LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lopencv_gpu
 LDFLAGS		+= $(shell pkg-config $(PKGS) --libs)
 
 MOC_SOURCES :=						\

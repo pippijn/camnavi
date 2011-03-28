@@ -2,6 +2,7 @@
 
 #include <cstdio>
 
+#include <opencv2/gpu/gpu.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 #include "fourier.h"
@@ -12,50 +13,56 @@
 #include "stardetector.h"
 #include "goodfeatures.h"
 
+#include "timer.h"
+
 using cv::Mat;
 
-#if 0
-#include "kernel.h"
-
-static void
-transform (Mat const &src, Mat &dst)
+static bool
+init_gpu (bool verbose = false)
 {
-  // Make sure the destination is of the same type as the source.
-  dst.create (src.size (), src.type ());
+  using namespace cv::gpu;
 
-#if 0
-  // Gaussian convolution kernel
-  filter2D (src, dst, 0,
-            Kernel
-            (1,  4,  7,  4, 1)
-            (4, 16, 26, 16, 4)
-            (7, 26, 41, 26, 7)
-            (4, 16, 26, 16, 4)
-            (1,  4,  7,  4, 1)
-            / 273);
-#elif 1
-  // Edge detect vertical
-  filter2D (src, dst, 0,
-            Kernel
-            (-1, 0, 1)
-            (-1, 0, 1)
-            (-1, 0, 1)
-           );
-#else
-  // Edge detect horizontal
-  filter2D (src, dst, 0,
-            Kernel
-            (-1, -1, -1)
-            ( 0,  0,  0)
-            ( 1,  1,  1)
-           );
-#endif
+  timer const T (__func__);
+  int num_devices = getCudaEnabledDeviceCount ();
+  printf ("Detected %d CUDA enabled device(s)\n", num_devices);
+  for (int i = 0; i < num_devices; ++i)
+    {
+      DeviceInfo dev_info (i);
+      if (verbose)
+        {
+          printf ("- Device #%d (%s, CC %d.%d, %lu/%lu MiB free, %d GPUs, v",
+                  i,
+                  dev_info.name ().c_str (),
+                  dev_info.majorVersion (),
+                  dev_info.minorVersion (),
+                  dev_info.freeMemory () / 1024 / 1024,
+                  dev_info.totalMemory () / 1024 / 1024,
+                  dev_info.multiProcessorCount ());
+          if (dev_info.supports (FEATURE_SET_COMPUTE_21))
+            printf ("2.1 (global atomics, native doubles)");
+          else if (dev_info.supports (FEATURE_SET_COMPUTE_20))
+            printf ("2.0 (global atomics, native doubles)");
+          else if (dev_info.supports (FEATURE_SET_COMPUTE_13))
+            printf ("1.3 (global atomics, native doubles)");
+          else if (dev_info.supports (FEATURE_SET_COMPUTE_12))
+            printf ("1.2 (global atomics)");
+          else if (dev_info.supports (FEATURE_SET_COMPUTE_11))
+            printf ("1.1 (global atomics)");
+          else if (dev_info.supports (FEATURE_SET_COMPUTE_10))
+            printf ("1.0");
+          puts (")");
+        }
+      if (!dev_info.isCompatible ())
+        return false;
+    }
+  return true;
 }
-#endif
 
 int
 main (int argc, char *argv[])
 {
+  if (!init_gpu ())
+    return EXIT_FAILURE;
 #if 0
   std::string hostname = "172.26.1.1";
   //std::string hostname = "172.26.1.2";
@@ -67,7 +74,7 @@ main (int argc, char *argv[])
   robot.run ();
 #else
   cv::namedWindow ("source");
-  //cv::namedWindow ("transformed");
+  cv::namedWindow ("transformed");
 
   Mat const frequency_filter = cv::imread ("filter.jpg", CV_LOAD_IMAGE_GRAYSCALE);
   line_detector linedet;
@@ -88,17 +95,18 @@ main (int argc, char *argv[])
       //equalizeHist (src, src);
       imshow ("source", src);
 
-      //dft_filter (src, frequency_filter, &dst);
-      //fft_filter (src, frequency_filter, &dst);
-      //fft_filter (src, frequency_filter, NULL, &dst);
-      //linedet (src, dst);
-      //transform (src, dst);
-      //mser (src, dst);
-      //surf (src, dst);
-      //stardetector (src, dst);
-      dst = src;
+      dft_filter (src, frequency_filter, &dst);
+      dft_filter (src, frequency_filter, NULL, &dst);
+      fft_filter (src, frequency_filter, &dst);
+      fft_filter (src, frequency_filter, NULL, &dst);
+      linedet (src, dst);
+      mser (src, dst);
+      surf (src, dst);
+      stardetector (src, dst);
       goodfeatures (src, dst);
-      //sift (src, dst);
+      fast_sift (src, dst);
+      sift (src, dst);
+
       sprintf (filename, "output/%03d.jpg", i);
       imwrite (filename, dst);
       imshow ("transformed", dst);
@@ -142,6 +150,9 @@ main (int argc, char *argv[])
           break;
         }
     }
+
+  cv::destroyWindow ("transformed");
+  cv::destroyWindow ("source");
 #endif
 
   return 0;

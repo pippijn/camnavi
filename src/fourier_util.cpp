@@ -1,5 +1,11 @@
 #include "fourier.h"
 #include "complex_image.h"
+#include "timer.h"
+
+#if 0
+#include <opencv2/gpu/gpu.hpp>
+using cv::gpu::GpuMat;
+#endif
 
 using cv::Mat;
 
@@ -71,5 +77,25 @@ detail::apply_filter (Mat &fourier, Mat const &filtersrc)
   Mat filter (filtersrc.size (), fourier.type ());
   merge (channels, 2, filter);
 
-  mulSpectrums (fourier, filter, fourier, 0);
+  {
+#if 0
+    timer const T (__func__);
+#endif
+    mulSpectrums (fourier, filter, fourier, 0);
+  }
+
+#if 0
+  fourier.convertTo (fourier, CV_32FC2);
+  GpuMat gpuFourier (fourier.size (), fourier.type ());
+  gpuFourier.upload (fourier);
+
+  filter.convertTo (filter, CV_32FC2);
+  GpuMat gpuFilter (filter.size (), filter.type ());
+  gpuFilter.upload (filter);
+
+  {
+    timer const T (__func__);
+    mulSpectrums (gpuFourier, gpuFilter, gpuFourier, 0);
+  }
+#endif
 }
