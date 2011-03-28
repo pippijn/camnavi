@@ -12,17 +12,17 @@ using cv::Mat;
 
 line_detector::line_detector ()
   // canny parameters
-  : threshold1 (5)
-  , threshold2 (50)
+  : threshold1 (8)
+  , threshold2 (40)
   , apertureSize (3)
   , L2gradient (false)
 
   // hough transform parameters
   , rho (1)
-  , theta (180)
-  , threshold (80)
-  , minLineLength (100)
-  , maxLineGap (0)
+  , theta (156)
+  , threshold (71)
+  , minLineLength (230)
+  , maxLineGap (16)
 {
 }
 

@@ -95,17 +95,17 @@ main (int argc, char *argv[])
       //equalizeHist (src, src);
       imshow ("source", src);
 
-      dft_filter (src, frequency_filter, &dst);
-      dft_filter (src, frequency_filter, NULL, &dst);
-      fft_filter (src, frequency_filter, &dst);
-      fft_filter (src, frequency_filter, NULL, &dst);
+      //dft_filter (src, frequency_filter, &dst);
+      //dft_filter (src, frequency_filter, NULL, &dst);
+      //fft_filter (src, frequency_filter, &dst);
+      //fft_filter (src, frequency_filter, NULL, &dst);
       linedet (src, dst);
-      mser (src, dst);
-      surf (src, dst);
-      stardetector (src, dst);
-      goodfeatures (src, dst);
-      fast_sift (src, dst);
-      sift (src, dst);
+      //mser (src, dst);
+      //surf (src, dst);
+      //stardetector (src, dst);
+      //goodfeatures (src, dst);
+      //fast_sift (src, dst);
+      //sift (src, dst);
 
       sprintf (filename, "output/%03d.jpg", i);
       imwrite (filename, dst);
@@ -125,10 +125,11 @@ main (int argc, char *argv[])
           static int const C1 = 1;
           static int const C2 = 5;
 
-          static int const H1 = 18;
-          static int const H2 = 8;
-          static int const H3 = 3;
-          static int const H4 = 1;
+          static int const H1 = 1;
+          static int const H2 = 18;
+          static int const H3 = 8;
+          static int const H4 = 3;
+          static int const H5 = 1;
         case 'p': linedet.threshold1 -= C1; break;
         case 'i': linedet.threshold1 += C1; break;
         case 'y': linedet.threshold2 -= C2; break;
@@ -142,8 +143,8 @@ main (int argc, char *argv[])
         case 'r': linedet.threshold += H3; break;
         case 't': linedet.minLineLength -= H4; break;
         case 'n': linedet.minLineLength += H4; break;
-        case 'z': linedet.maxLineGap -= H4; break;
-        case 's': linedet.maxLineGap += H4; break;
+        case 'z': linedet.maxLineGap -= H5; break;
+        case 's': linedet.maxLineGap += H5; break;
 
         case ' ':
           paused = !paused;
