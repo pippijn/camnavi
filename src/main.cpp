@@ -30,7 +30,7 @@ init_gpu (bool verbose = false)
       DeviceInfo dev_info (i);
       if (verbose)
         {
-          printf ("- Device #%d (%s, CC %d.%d, %lu/%lu MiB free, %d GPUs, v",
+          printf ("- Device #%d (%s, CC %d.%d, %lu/%lu MiB free, %d GPU(s), v",
                   i,
                   dev_info.name ().c_str (),
                   dev_info.majorVersion (),
