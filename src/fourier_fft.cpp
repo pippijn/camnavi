@@ -37,12 +37,12 @@ struct fftw
   fftw_plan const plan_b;
 
   fftw (cv::Size size)
-    /* initialise arrays for fftw operations */
+    // initialise arrays for fftw operations
     : data_in (alloc_array (size))
     ,  fft    (alloc_array (size))
     , ifft    (alloc_array (size))
 
-    /* create plans */
+    // create plans
     , plan_f (make_plan (size, data_in,  fft, FFTW_FORWARD ))
     , plan_b (make_plan (size, fft    , ifft, FFTW_BACKWARD))
   {
@@ -52,7 +52,7 @@ struct fftw
 
   ~fftw ()
   {
-    /* free memory */
+    // free memory
     fftw_destroy_plan (plan_b);
     fftw_destroy_plan (plan_f);
     fftw_free (ifft);
@@ -85,7 +85,7 @@ fft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *pl
 
   timer const T (__func__);
 
-  /* load img1's data to fftw input */
+  // load img1's data to fftw input
   for (int i = 0, k = 0; i < height; i++)
     for (int j = 0; j < width; j++)
       {
@@ -94,29 +94,51 @@ fft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *pl
         k++;
       }
 
-  /* perform FFT */
+  // perform FFT
   fftw_execute (ft.plan_f);
 
+  fftw_complex *out = ft.fft;
+  double max = DBL_MIN;
+  double min = DBL_MAX;
+  for (fftw_complex *it = ft.fft; it < ft.fft + width * height; ++it)
+    {
+      fftw_complex &v = *it;
+      v[0] = log (sqrt (v[0] * v[0] + v[1] * v[1]));
+      max = std::max (max, v[0]);
+      min = std::min (min, v[0]);
+    }
+
+  if (plot)
+    {
+      plot->create (src.size (), src.type ());
+      for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+          plot->at<uchar> (y, x) = (ft.fft[y * width + x][0] - min) * 255.0 / (max - min);
+    }
+#if 0
   Mat fourier (src.size (), CV_64FC2);
   for (int y = 0; y < height; y++)
     for (int x = 0; x < width; x++)
       {
-        fourier.at<double> (y, x        ) = ft.fft[y * width + x][0];
-        fourier.at<double> (y, x + width) = ft.fft[y * width + x][1];
+        fourier.at<double> (y, x * 2    ) = ft.fft[y * width + x / 2][0];
+        //fourier.at<double> (y, x * 2 + 1) = ft.fft[y * width + x / 2][1];
       }
+
+  //detail::apply_filter (fourier, filter);
 
   if (plot)
     // plot FT
     detail::dft_plot (fourier, *plot);
+#endif
 
-  /* perform IFFT */
+  // perform IFFT
   fftw_execute (ft.plan_b);
 
-  /* normalise IFFT result */
+  // normalise IFFT result
   for (int i = 0; i < width * height; i++)
     ft.ifft[i][0] /= width * height;
 
-  /* copy IFFT result to img2's data */
+  // copy IFFT result to img2's data
   if (dst)
     {
       dst->create (src.size (), src.type ());

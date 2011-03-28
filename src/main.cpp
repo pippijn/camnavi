@@ -8,6 +8,7 @@
 #include "fourier.h"
 #include "hough.h"
 #include "mser.h"
+#include "phase_correlation.h"
 #include "surf.h"
 #include "sift.h"
 #include "stardetector.h"
@@ -78,6 +79,8 @@ main (int argc, char *argv[])
 
   Mat const frequency_filter = cv::imread ("filter.jpg", CV_LOAD_IMAGE_GRAYSCALE);
   line_detector linedet;
+  surf_analyser surf;
+  phase_correlation phase_correlation;
 
   bool paused = false;
   Mat dst;
@@ -92,16 +95,19 @@ main (int argc, char *argv[])
       Mat const src = cv::imread (filename, CV_LOAD_IMAGE_GRAYSCALE);
       //dst.create (src.size (), src.type ());
       dst = Mat::zeros (src.size (), src.type ());
-      //equalizeHist (src, src);
+      //equalizeHist (src, (Mat&)src);
       imshow ("source", src);
+
+      //dst = src;
 
       //dft_filter (src, frequency_filter, &dst);
       //dft_filter (src, frequency_filter, NULL, &dst);
       //fft_filter (src, frequency_filter, &dst);
       //fft_filter (src, frequency_filter, NULL, &dst);
-      linedet (src, dst);
+      //linedet (src, dst);
       //mser (src, dst);
-      //surf (src, dst);
+      surf (src, dst);
+      //phase_correlation (src, dst);
       //stardetector (src, dst);
       //goodfeatures (src, dst);
       //fast_sift (src, dst);
@@ -111,7 +117,7 @@ main (int argc, char *argv[])
       imwrite (filename, dst);
       imshow ("transformed", dst);
 
-      switch (cv::waitKey (50))
+      switch (cv::waitKey (0))
         {
         case 'q':
           return 0;

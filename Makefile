@@ -1,7 +1,7 @@
 PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 gtk+-2.0 opencv
 
 CXXFLAGS	:= -Wall -ggdb3
-CFLAGL		:= -O3
+CFLAGS		:= -O3 -ggdb3 -fno-inline
 CPPFLAGS	:= -MD -Isrc $(shell pkg-config $(PKGS) --cflags)
 CPPFLAGS	+= -DTIXML_USE_STL -DTIXML_USE_TICPP
 
@@ -15,7 +15,7 @@ MOC_SOURCES :=						\
 	src/rec/robotino/imagesender/Manager.moc.cpp	\
 	src/rec/robotino/imagesender/Sender.moc.cpp	\
 
-SOURCES := $(shell find src -name "*.cpp" -or -name "*.c") $(MOC_SOURCES)
+SOURCES := $(shell find src -name "*.cpp" -or -name "*.cxx" -or -name "*.c") $(MOC_SOURCES)
 OBJECTS := $(addsuffix .o,$(basename $(SOURCES)))
 
 all: client
@@ -32,5 +32,11 @@ clean:
 
 %.moc.cpp: %.hh
 	moc $< -o $@
+
+%.o: %.cpp
+	$(COMPILE.cpp) $< -o $@ -std=c++98
+
+%.o: %.cxx
+	$(COMPILE.cpp) $< -o $@ -std=c++0x
 
 -include $(shell find src -name "*.d")

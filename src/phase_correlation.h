@@ -3,10 +3,10 @@
 #include <memory>
 #include "cvfwd.h"
 
-struct surf_analyser
+struct phase_correlation
 {
-  surf_analyser ();
-  ~surf_analyser ();
+  phase_correlation ();
+  ~phase_correlation ();
 
   void operator () (cv::Mat const &src, cv::Mat &dst);
 

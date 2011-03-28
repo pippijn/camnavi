@@ -55,9 +55,3 @@ line_detector::detect_lines (Mat const &src, Mat &colour_dst)
                 3, 8);
     }
 }
-
-void
-line_detector::operator () (Mat const &src, Mat &colour_dst)
-{
-  detect_lines (src, colour_dst);
-}
