@@ -2,7 +2,7 @@ PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 gtk+-2.0 opencv
 
 CXXFLAGS	:= -Wall -ggdb3
 CFLAGS		:= -O3 -ggdb3 -fno-inline
-INCLUDES	:= -Isrc/gpu/cudpp -Isrc/gpu/common
+INCLUDES	:= -Isrc -Isrc/gpu/cudpp -Isrc/gpu/common
 CPPFLAGS	:= -MD $(shell pkg-config $(PKGS) --cflags) $(INCLUDES)
 CPPFLAGS	+= -DTIXML_USE_STL -DTIXML_USE_TICPP
 
