@@ -1,13 +1,18 @@
-PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 gtk+-2.0 opencv
+PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 opencv x11 gl glew IL
 
-CXXFLAGS	:= -Wall -ggdb3
-CFLAGS		:= -O3 -ggdb3 -fno-inline
-INCLUDES	:= -Isrc -Isrc/gpu/cudpp -Isrc/gpu/common
-CPPFLAGS	:= -MD $(shell pkg-config $(PKGS) --cflags) $(INCLUDES)
+CXXFLAGS	:= -MD -fPIC -Wall -ggdb3
+CFLAGS		:= -MD -fPIC -O3 -ggdb3 -fno-inline
+CPPFLAGS	:= -Isrc -Isrc/gpu/cudpp -Isrc/gpu/common
 CPPFLAGS	+= -DTIXML_USE_STL -DTIXML_USE_TICPP
+CPPFLAGS	+= -DCL_SIFTGPU_ENABLED
+CPPFLAGS	+= -DCUDA_SIFTGPU_ENABLED
+CPPFLAGS	+= -DSRCDIR='"$(PWD)"'
+PKGFLAGS	+= $(shell pkg-config $(PKGS) --cflags)
 
-LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lopencv_gpu -lcudart
+LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lopencv_gpu -lcudart -lOpenCL
 LDFLAGS		+= $(shell pkg-config $(PKGS) --libs)
+
+LIBS		:=
 
 MOC_SOURCES :=						\
 	src/rec/robotino/com/ComImpl.moc.cpp		\
@@ -19,28 +24,54 @@ MOC_SOURCES :=						\
 SOURCES := $(shell find src -name "*.cpp" -or -name "*.cxx" -or -name "*.c" -or -name "*.cu") $(MOC_SOURCES)
 OBJECTS := $(addsuffix .o,$(basename $(SOURCES)))
 
-all: client
-	./$< #|| $(MAKE)
+V_MOC	= $(V_MOC_$(V))
+V_CC	= $(V_CC_$(V))
+V_CPP	= $(V_CPP_$(V))
+V_CXX	= $(V_CXX_$(V))
+V_CU	= $(V_CU_$(V))
+V_LD	= $(V_LD_$(V))
 
-client: $(OBJECTS)
-	$(LINK.cpp) $^ -o $@ $(LIBS)
+V_MOC_	= @echo "   MOC   " $@;
+V_CC_	= @echo "   CC    " $@;
+V_CPP_	= @echo "   CXX   " $@;
+V_CXX_	= @echo "   CXX0X " $@;
+V_CU_	= @echo "   CUDA  " $@;
+V_LD_	= @echo "   LD    " $@;
+
+PROGRAMS = $(patsubst programs/%.cpp,bin/%,$(wildcard programs/*.cpp))
+
+CUSTOMLIBS = $(shell head -n1 ${<:.o=.cpp} | grep '^//>' | cut -b1,2,3 --complement)
+
+programs: $(PROGRAMS)
+
+run: programs
+	bin/client #|| $(MAKE)
+
+bin/%: programs/%.o bin/libnavi.so
+	$(V_LD)$(LINK.cpp) $< -o $@ -lnavi -Lbin -Wl,-rpath,$(PWD)/bin $(LIBS) $(CUSTOMLIBS)
+
+bin/libnavi.so: $(OBJECTS)
+	$(V_LD)$(LINK.cpp) -shared -o $@ $^
 
 clean:
-	$(RM) client $(OBJECTS) $(OBJECTS:.o=.d)
+	$(RM) $(wildcard $(OBJECTS) $(OBJECTS:.o=.d) wildcard bin/*)
 
 %.moc.cpp: %.h
-	moc $< -o $@
+	$(V_MOC)moc $< -o $@
 
 %.moc.cpp: %.hh
-	moc $< -o $@
+	$(V_MOC)moc $< -o $@
+
+%.o: %.c
+	$(V_CC)$(COMPILE.c) $(PKGFLAGS) $< -o $@
 
 %.o: %.cpp
-	$(COMPILE.cpp) $< -o $@ -std=c++98
+	$(V_CPP)$(COMPILE.cpp) $(PKGFLAGS) $< -o $@ -std=c++98
 
 %.o: %.cxx
-	$(COMPILE.cpp) $< -o $@ -std=c++0x
+	$(V_CXX)$(COMPILE.cpp) $(PKGFLAGS) $< -o $@ -std=c++0x
 
 %.o: %.cu
-	nvcc $(INCLUDES) -c $< -o $@ -O3 -Xcompiler ',"-g","-fno-strict-aliasing"' -arch=sm_11
+	$(V_CU)nvcc $(CPPFLAGS) -c $< -o $@ -O3 -Xcompiler ',"-g","-fno-strict-aliasing","-fPIC"' -arch=sm_11
 
--include $(shell find src -name "*.d")
+-include $(shell find src programs -name "*.d")

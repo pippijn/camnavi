@@ -2,8 +2,7 @@
 
 #include <opencv2/features2d/features2d.hpp>
 
-#include <boost/foreach.hpp>
-
+#include "foreach.h"
 #include "timer.h"
 
 using cv::Mat;
@@ -28,11 +27,7 @@ mser (Mat const &src, Mat &dst)
   cv::vector<cv::vector<cv::Point> > msers;
   mser (src, msers, cv::Mat ());
 
-  BOOST_FOREACH (cv::vector<cv::Point> const &r, msers)
-    {
-      BOOST_FOREACH (cv::Point const &p, r)
-        {
-          dst.at<uchar> (p.y, p.x) = 255;
-        }
-    }
+  foreach (cv::vector<cv::Point> const &r, msers)
+    foreach (cv::Point const &p, r)
+      dst.at<uchar> (p.y, p.x) = 255;
 }

@@ -10,7 +10,7 @@ using cv::Mat;
 static void
 store_wisdom ()
 {
-  if (FILE *wisdom = fopen ("wisdom.lsp", "w"))
+  if (FILE *wisdom = fopen (SRCDIR"/wisdom.lsp", "w"))
     {
       fftw_export_wisdom_to_file (wisdom);
       fclose (wisdom);
@@ -20,7 +20,7 @@ store_wisdom ()
 static void
 load_wisdom ()
 {
-  if (FILE *wisdom = fopen ("wisdom.lsp", "r"))
+  if (FILE *wisdom = fopen (SRCDIR"/wisdom.lsp", "r"))
     {
       fftw_import_wisdom_from_file (wisdom);
       fclose (wisdom);
@@ -96,40 +96,6 @@ fft_filter (cv::Mat const &src, cv::Mat const &filter, cv::Mat *dst, cv::Mat *pl
 
   // perform FFT
   fftw_execute (ft.plan_f);
-
-  fftw_complex *out = ft.fft;
-  double max = DBL_MIN;
-  double min = DBL_MAX;
-  for (fftw_complex *it = ft.fft; it < ft.fft + width * height; ++it)
-    {
-      fftw_complex &v = *it;
-      v[0] = log (sqrt (v[0] * v[0] + v[1] * v[1]));
-      max = std::max (max, v[0]);
-      min = std::min (min, v[0]);
-    }
-
-  if (plot)
-    {
-      plot->create (src.size (), src.type ());
-      for (int y = 0; y < height; y++)
-        for (int x = 0; x < width; x++)
-          plot->at<uchar> (y, x) = (ft.fft[y * width + x][0] - min) * 255.0 / (max - min);
-    }
-#if 0
-  Mat fourier (src.size (), CV_64FC2);
-  for (int y = 0; y < height; y++)
-    for (int x = 0; x < width; x++)
-      {
-        fourier.at<double> (y, x * 2    ) = ft.fft[y * width + x / 2][0];
-        //fourier.at<double> (y, x * 2 + 1) = ft.fft[y * width + x / 2][1];
-      }
-
-  //detail::apply_filter (fourier, filter);
-
-  if (plot)
-    // plot FT
-    detail::dft_plot (fourier, *plot);
-#endif
 
   // perform IFFT
   fftw_execute (ft.plan_b);

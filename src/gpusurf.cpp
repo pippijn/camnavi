@@ -1,9 +1,8 @@
-#include "sift.h"
+#include "gpusurf.h"
 
 #include "gpu/gpusurf/GpuSurfDetector.hpp"
 
-#include <boost/foreach.hpp>
-
+#include "foreach.h"
 #include "timer.h"
 
 using cv::Mat;
@@ -40,8 +39,6 @@ gpusurf (Mat const &src, Mat &dst)
 #endif
 
   // Draw keypoints onto the picture
-  BOOST_FOREACH (cv::KeyPoint const &p, keypoints)
-    {
-      dst.at<uchar> (p.pt.y, p.pt.x) = 255;
-    }
+  foreach (cv::KeyPoint const &p, keypoints)
+    dst.at<uchar> (p.pt.y, p.pt.x) = 255;
 }

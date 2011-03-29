@@ -4,8 +4,7 @@
 
 #include <cstdio>
 
-#include <boost/foreach.hpp>
-
+#include "foreach.h"
 #include "timer.h"
 
 using cv::Mat;
@@ -46,7 +45,7 @@ line_detector::detect_lines (Mat const &src, Mat &colour_dst)
   HoughLinesP (dst, lines, rho, CV_PI / theta, threshold, minLineLength, maxLineGap);
 
   // Draw the lines in red colour onto the BGR colour_dst image
-  BOOST_FOREACH (cv::Vec4i const &line, lines)
+  foreach (cv::Vec4i const &line, lines)
     {
       cv::line (colour_dst,
                 cv::Point (line[0], line[1]),

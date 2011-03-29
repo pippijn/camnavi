@@ -81,6 +81,8 @@ detail::apply_filter (Mat &fourier, Mat const &filtersrc)
 #if 0
     timer const T (__func__);
 #endif
+    assert (fourier.type () == filter.type ());
+    assert (fourier.size () == filter.size ());
     mulSpectrums (fourier, filter, fourier, 0);
   }
 
