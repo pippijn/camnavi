@@ -2,10 +2,11 @@ PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 gtk+-2.0 opencv
 
 CXXFLAGS	:= -Wall -ggdb3
 CFLAGS		:= -O3 -ggdb3 -fno-inline
-CPPFLAGS	:= -MD -Isrc $(shell pkg-config $(PKGS) --cflags)
+INCLUDES	:= -Isrc/gpu/cudpp -Isrc/gpu/common
+CPPFLAGS	:= -MD $(shell pkg-config $(PKGS) --cflags) $(INCLUDES)
 CPPFLAGS	+= -DTIXML_USE_STL -DTIXML_USE_TICPP
 
-LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lopencv_gpu
+LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lopencv_gpu -lcudart
 LDFLAGS		+= $(shell pkg-config $(PKGS) --libs)
 
 MOC_SOURCES :=						\
@@ -15,14 +16,14 @@ MOC_SOURCES :=						\
 	src/rec/robotino/imagesender/Manager.moc.cpp	\
 	src/rec/robotino/imagesender/Sender.moc.cpp	\
 
-SOURCES := $(shell find src -name "*.cpp" -or -name "*.cxx" -or -name "*.c") $(MOC_SOURCES)
+SOURCES := $(shell find src -name "*.cpp" -or -name "*.cxx" -or -name "*.c" -or -name "*.cu") $(MOC_SOURCES)
 OBJECTS := $(addsuffix .o,$(basename $(SOURCES)))
 
 all: client
 	./$< #|| $(MAKE)
 
 client: $(OBJECTS)
-	$(LINK.cpp) $^ -o $@
+	$(LINK.cpp) $^ -o $@ $(LIBS)
 
 clean:
 	$(RM) client $(OBJECTS) $(OBJECTS:.o=.d)
@@ -38,5 +39,8 @@ clean:
 
 %.o: %.cxx
 	$(COMPILE.cpp) $< -o $@ -std=c++0x
+
+%.o: %.cu
+	nvcc $(INCLUDES) -c $< -o $@ -O3 -Xcompiler ',"-g","-fno-strict-aliasing"' -arch=sm_11
 
 -include $(shell find src -name "*.d")

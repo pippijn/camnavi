@@ -9,7 +9,9 @@
 #include "hough.h"
 #include "mser.h"
 #include "phase_correlation.h"
+#include "surf_analyser.h"
 #include "surf.h"
+#include "gpusurf.h"
 #include "sift.h"
 #include "stardetector.h"
 #include "goodfeatures.h"
@@ -79,7 +81,7 @@ main (int argc, char *argv[])
 
   Mat const frequency_filter = cv::imread ("filter.jpg", CV_LOAD_IMAGE_GRAYSCALE);
   line_detector linedet;
-  surf_analyser surf;
+  surf_analyser surf_analyser;
   phase_correlation phase_correlation;
 
   bool paused = false;
@@ -106,7 +108,9 @@ main (int argc, char *argv[])
       //fft_filter (src, frequency_filter, NULL, &dst);
       //linedet (src, dst);
       //mser (src, dst);
-      surf (src, dst);
+      //surf_analyser (src, dst);
+      //surf (src, dst);
+      gpusurf (src, dst);
       //phase_correlation (src, dst);
       //stardetector (src, dst);
       //goodfeatures (src, dst);
@@ -117,7 +121,7 @@ main (int argc, char *argv[])
       imwrite (filename, dst);
       imshow ("transformed", dst);
 
-      switch (cv::waitKey (0))
+      switch (cv::waitKey (1))
         {
         case 'q':
           return 0;
