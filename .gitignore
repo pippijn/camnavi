@@ -1,6 +1,7 @@
 /bin
 /doc
-/images
+/images*
+/output/*.jpg
+/*.jpg
 *.moc.cpp
 *.[od]
-*.jpg

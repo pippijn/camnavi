@@ -2,7 +2,7 @@ PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 opencv x11 gl glew IL
 
 CXXFLAGS	:= -MD -fPIC -O0 -mfpmath=sse -march=native -fno-inline -Wall -ggdb3
 CFLAGS		:= -MD -fPIC -O3 -mfpmath=sse -march=native -fno-inline -ggdb3
-CPPFLAGS	:= -Isrc -Isrc/cudpp
+CPPFLAGS	:= -Isrc -Isrc/cudpp -Isrc/navi
 CPPFLAGS	+= -DTIXML_USE_TICPP -D__LINUX__ -w
 CPPFLAGS	+= -DCL_SIFTGPU_ENABLED
 CPPFLAGS	+= -DCUDA_SIFTGPU_ENABLED

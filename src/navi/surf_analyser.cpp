@@ -56,7 +56,7 @@ struct surf_analyser::pimpl
   Mat const mask;
 
   pimpl ()
-    : mask (cv::imread ("lower_mask.jpg", CV_LOAD_IMAGE_GRAYSCALE))
+    : mask (cv::imread (SRCDIR"/masks/lower_mask.jpg", CV_LOAD_IMAGE_GRAYSCALE))
   {
   }
 
