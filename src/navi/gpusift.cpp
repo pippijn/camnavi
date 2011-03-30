@@ -8,7 +8,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
-#include "gpu/gpusift/SiftGPU.h"
+#include "gpusift/SiftGPU.h"
 #include "timer.h"
 #include "foreach.h"
 

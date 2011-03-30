@@ -1,6 +1,6 @@
 #include "gpusurf.h"
 
-#include "gpu/gpusurf/GpuSurfDetector.hpp"
+#include "gpusurf/GpuSurfDetector.hpp"
 
 #include "foreach.h"
 #include "timer.h"

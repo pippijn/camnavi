@@ -2,8 +2,8 @@ PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 opencv x11 gl glew IL
 
 CXXFLAGS	:= -MD -fPIC -O0 -mfpmath=sse -march=native -fno-inline -Wall -ggdb3
 CFLAGS		:= -MD -fPIC -O3 -mfpmath=sse -march=native -fno-inline -ggdb3
-CPPFLAGS	:= -Isrc -Isrc/gpu/cudpp -Isrc/gpu/common
-CPPFLAGS	+= -DTIXML_USE_STL -DTIXML_USE_TICPP
+CPPFLAGS	:= -Isrc -Isrc/cudpp
+CPPFLAGS	+= -DTIXML_USE_TICPP -D__LINUX__ -w
 CPPFLAGS	+= -DCL_SIFTGPU_ENABLED
 CPPFLAGS	+= -DCUDA_SIFTGPU_ENABLED
 CPPFLAGS	+= -DSRCDIR='"$(PWD)"'
@@ -12,7 +12,8 @@ PKGFLAGS	+= $(shell pkg-config $(PKGS) --cflags)
 LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lopencv_gpu -lcudart -lOpenCL
 LDFLAGS		+= $(shell pkg-config $(PKGS) --libs)
 
-LIBS		:=
+LIBS		:= $(patsubst src/%,bin/lib%.so,$(wildcard src/*))
+LINKLIBS	:= $(patsubst src/%,-l%,$(wildcard src/*))
 
 MOC_SOURCES :=						\
 	src/rec/robotino/com/ComImpl.moc.cpp		\
@@ -21,8 +22,9 @@ MOC_SOURCES :=						\
 	src/rec/robotino/imagesender/Manager.moc.cpp	\
 	src/rec/robotino/imagesender/Sender.moc.cpp	\
 
-SOURCES := $(shell find src -name "*.cpp" -or -name "*.cxx" -or -name "*.c" -or -name "*.cu") $(MOC_SOURCES)
-OBJECTS := $(addsuffix .o,$(basename $(SOURCES)))
+FIND	:= -name "*.cpp" -or -name "*.cxx" -or -name "*.c" -or -name "*.cu"
+SOURCES	:= $(shell find src $(FIND)) $(MOC_SOURCES)
+OBJECTS	:= $(addsuffix .o,$(basename $(SOURCES)))
 
 V_MOC	= $(V_MOC_$(V))
 V_CC	= $(V_CC_$(V))
@@ -42,16 +44,16 @@ PROGRAMS = $(patsubst programs/%.cpp,bin/%,$(wildcard programs/*.cpp))
 
 CUSTOMLIBS = $(shell head -n1 ${<:.o=.cpp} | grep '^//>' | cut -b1,2,3 --complement)
 
-programs: $(PROGRAMS)
+programs: $(LIBS) $(PROGRAMS)
 
-run: programs
-	bin/client #|| $(MAKE)
+bin/%: programs/%.o bin/libnavi.so $(LIBS)
+	$(V_LD)$(LINK.cpp) $< -o $@ $(LINKLIBS) -Lbin -Wl,-rpath,$(PWD)/bin $(CUSTOMLIBS)
 
-bin/%: programs/%.o bin/libnavi.so
-	$(V_LD)$(LINK.cpp) $< -o $@ -lnavi -Lbin -Wl,-rpath,$(PWD)/bin $(LIBS) $(CUSTOMLIBS)
-
-bin/libnavi.so: $(OBJECTS)
+.SECONDEXPANSION:
+bin/lib%.so: $$(addsuffix .o,$$(basename $$(shell find src/$$* $(FIND))))
 	$(V_LD)$(LINK.cpp) -shared -o $@ $^
+
+bin/librec.so: $(MOC_SOURCES:.cpp=.o)
 
 clean:
 	$(RM) $(wildcard $(OBJECTS) $(OBJECTS:.o=.d) wildcard bin/*)
