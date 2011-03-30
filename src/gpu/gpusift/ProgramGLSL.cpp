@@ -198,9 +198,12 @@ ProgramGLSL::LinkProgram ()
 
   CheckLinkLog ();
 
-  //	GlobalUtil::StartTimer("100 link test");
-  //	for(int i = 0; i<100; i++) glLinkProgram(_programID);
-  //	GlobalUtil::StopTimer();
+#if 0
+  GlobalUtil::StartTimer ("100 link test");
+  for (int i = 0; i < 100; i++)
+    glLinkProgram (_programID);
+  GlobalUtil::StopTimer ();
+#endif
 
   return _linked;
 }
@@ -219,11 +222,15 @@ int
 ProgramGLSL::ValidateProgram ()
 {
   if (_programID && _linked)
-    ///		GLint status;
-    //		glValidateProgram(_programID);
-    //		glGetProgramiv(_programID, GL_VALIDATE_STATUS, &status);
-    //		return status == GL_TRUE;
-    return 1;
+    {
+#if 0
+      GLint status;
+      glValidateProgram (_programID);
+      glGetProgramiv (_programID, GL_VALIDATE_STATUS, &status);
+      return status == GL_TRUE;
+#endif
+      return 1;
+    }
   else
     return 0;
 }
@@ -278,37 +285,39 @@ ProgramGLSL::ProgramGLSL (const char *frag_source)
       LinkProgram ();
 
       if (!_linked)
-        //shader.PrintCompileLog(std::cout);
-        PrintLinkLog (std::cout);
+        {
+#if 0
+          shader.PrintCompileLog (std::cout);
+#endif
+          PrintLinkLog (std::cout);
+        }
     }
   else
     _linked = 0;
 
 }
 
-/*
- * ProgramGLSL::ProgramGLSL(char*frag_source, char * vert_source)
- * {
- *      _used = 0;
- *      _linked = 0;
- *      _programID = glCreateProgram();
- *      ShaderObject shader(GL_FRAGMENT_SHADER, frag_source);
- *      ShaderObject vertex_shader(GL_VERTEX_SHADER, vert_source);
- *      AttachShaderObject(shader);
- *      AttachShaderObject(vertex_shader);
- *      LinkProgram();
- *      if(!_linked)
- *      {
- *              shader.PrintCompileLog(std::cout);
- *              vertex_shader.PrintCompileLog(std::cout);
- *              PrintLinkLog(std::cout);
- *              std::cout<<vert_source;
- *              std::cout<<frag_source;
- *      }
- *
- * }
- */
-
+#if 0
+ProgramGLSL::ProgramGLSL (char *frag_source, char *vert_source)
+{
+  _used = 0;
+  _linked = 0;
+  _programID = glCreateProgram ();
+  ShaderObject shader (GL_FRAGMENT_SHADER, frag_source);
+  ShaderObject vertex_shader (GL_VERTEX_SHADER, vert_source);
+  AttachShaderObject (shader);
+  AttachShaderObject (vertex_shader);
+  LinkProgram ();
+  if (!_linked)
+    {
+      shader.PrintCompileLog (std::cout);
+      vertex_shader.PrintCompileLog (std::cout);
+      PrintLinkLog (std::cout);
+      std::cout << vert_source;
+      std::cout << frag_source;
+    }
+}
+#endif
 
 
 void
@@ -859,16 +868,15 @@ ShaderBagGLSL::LoadKeypointShader (float threshold, float edge_threshold)
   "	float fxx_plus_fyy = fxx + fyy;\n"
   "	float score_up = fxx_plus_fyy*fxx_plus_fyy; \n"
   "	float score_down = (fxx*fyy - fxy*fxy);\n"
-  "	if( score_down <= 0 || score_up > THRESHOLD2 * score_down)return;\n";
+  "	if( score_down <= 0 || score_up > THRESHOLD2 * score_down)return;\n"
 
   //...
-  out << " \n"
+  " \n"
   "	vec2 D5 = 0.5*(v1.yw-v1.xz); \n"
   "	float fx = D5.x, fy = D5.y ; \n"
   "	float fs, fss , fxs, fys ; \n"
   "	vec2 v3; vec4 v4, v5, v6;\n"
   //read 9 pixels of upper level
-  <<
   "	v3.x = texture2DRect(texU, gl_TexCoord[0].xy).g;\n"
   "	v4.x = texture2DRect(texU, gl_TexCoord[1].xy).g;\n"
   "	v4.y = texture2DRect(texU, gl_TexCoord[2].xy).g;\n"
@@ -881,7 +889,6 @@ ShaderBagGLSL::LoadKeypointShader (float threshold, float edge_threshold)
   //compare with 9 pixels of upper level
   //read and compare with 9 pixels of lower level
   //the maximum case
-  <<
   "	if(dog == 1.0)\n"
   "	{\n"
   "		if(cc.g < v3.x || any(lessThan(cc.gggg, v4)) ||any(lessThan(cc.gggg, v6)))return; \n"
@@ -897,7 +904,6 @@ ShaderBagGLSL::LoadKeypointShader (float threshold, float edge_threshold)
   "		if(cc.g < v3.y || any(lessThan(cc.gggg, v5)) ||any(lessThan(cc.gggg, v6)))return; \n"
   "	}\n"
   //the minimum case
-  <<
   "	else{\n"
   "	if(cc.g > v3.x || any(greaterThan(cc.gggg, v4)) ||any(greaterThan(cc.gggg, v6)))return; \n"
   "		v3.y = texture2DRect(texD, gl_TexCoord[0].xy).g;\n"
@@ -938,7 +944,6 @@ ShaderBagGLSL::LoadKeypointShader (float threshold, float edge_threshold)
     // need to solve dx, dy, ds
 
     // Use Gauss elimination to solve the linear system
-    <<
     "	vec3 dxys = vec3(0.0);		\n"
     "	vec4 A0, A1, A2 ;			\n"
     "	A0 = vec4(fxx, fxy, fxs, -fx);	\n"
@@ -970,21 +975,18 @@ ShaderBagGLSL::LoadKeypointShader (float threshold, float edge_threshold)
     "			A2.yzw -= A2.y * A1.yzw;					\n"
     "			if(abs(A2.z) >= 1e-10) {		\n"
     // compute dx, dy, ds:
-    <<
     "				\n"
     "				dxys.z = A2.w /A2.z;				    \n"
     "				dxys.y = A1.w - dxys.z*A1.z;			    \n"
     "				dxys.x = A0.w - dxys.z*A0.z - dxys.y*A0.y;	\n"
 
     //one more threshold which I forgot in versions prior to 286
-    <<
     "				bool dog_test = (abs(cc.g + 0.5*dot(vec3(fx, fy, fs), dxys ))<= THRESHOLD1) ;\n"
     "				if(dog_test || any(greaterThan(abs(dxys), vec3(1.0)))) dog = 0;\n"
     "			}\n"
     "		}\n"
     "	}\n"
     //keep the point when the offset is less than 1
-    <<
     "	gl_FragData[1] = vec4( dog, dxys); \n";
   else
 
@@ -1220,10 +1222,10 @@ ShaderBagGLSL::LoadOrientationShader ()
   "	//if(any(pos.xy <= 1)) discard;					\n"
   "	sz.xy = max( pos - win, vec2(1,1));			\n"
   "	sz.zw = min( pos + win, dim-2);				\n"
-  "	sz = floor(sz)+0.5;";
+  "	sz = floor(sz)+0.5;"
   //loop to get the histogram
 
-  out << "\n"
+  "\n"
   "	for(spos.y = sz.y; spos.y <= sz.w;	spos.y+=1.0)				\n"
   "	{																\n"
   "		for(spos.x = sz.x; spos.x <= sz.z;	spos.x+=1.0)			\n"
@@ -1354,8 +1356,8 @@ ShaderBagGLSL::WriteOrientationCodeToStream (std::ostream &out)
   "			bins[3]), bins[4]), bins[5]), bins[6]), bins[7]), bins[8]);\n"
   "	maxh2 = max(maxh4.xy, maxh4.zw); maxh = vec4(max(maxh2.x, maxh2.y));";
 
-  char *testpeak_code;
-  char *savepeak_code;
+  char const *testpeak_code;
+  char const *savepeak_code;
 
   //save two/three/four orientations with the largest votings?
 

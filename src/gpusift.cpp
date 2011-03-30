@@ -8,8 +8,6 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
-#include <GL/gl.h>
-
 #include "gpu/gpusift/SiftGPU.h"
 #include "timer.h"
 #include "foreach.h"
@@ -21,13 +19,8 @@ init_sift ()
 {
   SiftGPU *sift = new SiftGPU;
   char const *argv[] = {
-    "-fo", "-1",
-    "-v", "1",
-    "-d", "2",
-    "-p", "640x480",
-    "-di",
-    "-lmp", "100",
     "-t", "0.01",
+    "-v", "0",
     //"-cuda",
   };
   size_t argc = sizeof argv / sizeof *argv;
@@ -133,6 +126,7 @@ struct gpusift::pimpl
   } hist;
 
   void gpusift (Mat const &src, Mat &dst);
+  static void draw (std::vector<SiftGPU::SiftKeypoint> const &keys, Mat &dst);
   static void match (history_item const &item0, history_item const &item1, MatchBuffer &match_buffer);
   void match (Mat &dst);
 };
@@ -162,17 +156,26 @@ gpusift::pimpl::gpusift (Mat const &src, Mat &dst)
 
   if (hist.push (cur))
     match (dst);
+  else
+    draw (cur.keys, dst);
+}
+
+void
+gpusift::pimpl::draw (std::vector<SiftGPU::SiftKeypoint> const &keys, Mat &dst)
+{
+  foreach (SiftGPU::SiftKeypoint const &p, keys)
+    dst.at<uchar> (p.y, p.x) = 255;
 }
 
 void
 gpusift::pimpl::match (history_item const &item0, history_item const &item1, MatchBuffer &match_buffer)
 {
-  printf ("matching %lu and %lu: ", item0.id, item1.id);
+  //printf ("matching %lu and %lu: ", item0.id, item1.id);
   matcher->SetDescriptors (0, item0.keys.size (), &item0.descriptors[0]);
   matcher->SetDescriptors (1, item1.keys.size (), &item1.descriptors[0]);
 
   matcher->GetSiftMatch (match_buffer);
-  printf ("%lu matches\n", match_buffer.size ());
+  //printf ("%lu matches\n", match_buffer.size ());
 }
 
 void

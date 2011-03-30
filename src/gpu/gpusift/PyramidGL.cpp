@@ -43,8 +43,6 @@ using namespace std;
 #if defined(__SSE__) || _MSC_VER > 1200
 #define USE_SSE_FOR_SIFTGPU
 #include <xmmintrin.h>
-#else
-//#pragma message( "SSE optimization off!\n" )
 #endif
 
 
@@ -527,7 +525,6 @@ PyramidGL::ResizeFeatureStorage ()
   if (GlobalUtil::_MaxOrientation > 1 && GlobalUtil::_OrientationPack2 == 0)
     if (_orientationTex == NULL)
       _orientationTex = new GLTexImage[n];
-
 
   for (i = 0; i < _octave_num; i++)
     {

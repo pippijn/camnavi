@@ -1,7 +1,7 @@
 PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 opencv x11 gl glew IL
 
-CXXFLAGS	:= -MD -fPIC -Wall -ggdb3
-CFLAGS		:= -MD -fPIC -O3 -ggdb3 -fno-inline
+CXXFLAGS	:= -MD -fPIC -O0 -mfpmath=sse -march=native -fno-inline -Wall -ggdb3
+CFLAGS		:= -MD -fPIC -O3 -mfpmath=sse -march=native -fno-inline -ggdb3
 CPPFLAGS	:= -Isrc -Isrc/gpu/cudpp -Isrc/gpu/common
 CPPFLAGS	+= -DTIXML_USE_STL -DTIXML_USE_TICPP
 CPPFLAGS	+= -DCL_SIFTGPU_ENABLED
