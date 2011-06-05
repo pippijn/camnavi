@@ -1,0 +1,57 @@
+void FragmentProgram(
+    in  float2 fptexCoord0  : TEXCOORD0,
+    in  float2 fptexCoord1   : TEXCOORD1,
+    in  float2 fptexCoord2   : TEXCOORD2,
+    in  float2 fptexCoord3   : TEXCOORD3,
+    in  float2 fptexCoord4   : TEXCOORD4,
+    in  float2 fptexCoord5   : TEXCOORD5,
+    in  float2 fptexCoord6   : TEXCOORD6,
+    in  float2 fptexCoord7   : TEXCOORD7,
+    out float4 colorO       : COLOR0 ,
+    const uniform samplerRECT FPE0: TEXUNIT0 )
+
+{
+   // weights for a 4x1 gaussian filter
+   // here just one half is shown (its symmetric)
+// octave:4> gaussian(16)./sum(gaussian(16))
+//ans =
+
+   float weights[16] = { 
+  2.4343e-13,
+   2.6696e-10,
+   1.0770e-07,
+   1.5984e-05,
+   8.7268e-04,
+   1.7528e-02,
+   1.2952e-01,
+   3.5207e-01,
+   3.5207e-01,
+   1.2952e-01,
+   1.7528e-02,
+   8.7268e-04,
+   1.5984e-05,
+   1.0770e-07,
+   2.6696e-10,
+   2.4343e-13
+  };
+
+   int i=0 ;
+   float4 accum = {0.0,0.0,0.0,0.0};
+   float4 samp;
+   accum += weights[0].xxxx*texRECT(FPE0, fptexCoord0 );
+   accum += weights[1].xxxx*texRECT(FPE0, fptexCoord1 );
+   accum += weights[2].xxxx*texRECT(FPE0, fptexCoord2 );
+   accum += weights[3].xxxx*texRECT(FPE0, fptexCoord3 );
+   accum += weights[4].xxxx*texRECT(FPE0, fptexCoord4 );
+   accum += weights[5].xxxx*texRECT(FPE0, fptexCoord5 );
+   accum += weights[6].xxxx*texRECT(FPE0, fptexCoord6 );
+   accum += weights[7].xxxx*texRECT(FPE0, fptexCoord7 );
+    
+   for( i=8 ; i<=15 ; i++ ) { 
+     accum += weights[i].xxxx*texRECT(FPE0,fptexCoord7+float2(i-7,0.0));
+   }
+
+   colorO = accum;
+
+  
+}

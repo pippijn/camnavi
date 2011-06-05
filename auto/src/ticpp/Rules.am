@@ -1,0 +1,8 @@
+lib_LTLIBRARIES += libticpp.la
+
+libticpp_la_SOURCES =			\
+	src/ticpp/ticpp.cpp		\
+	src/ticpp/tinystr.cpp		\
+	src/ticpp/tinyxml.cpp		\
+	src/ticpp/tinyxmlerror.cpp	\
+	src/ticpp/tinyxmlparser.cpp

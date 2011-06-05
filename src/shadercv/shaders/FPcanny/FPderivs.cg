@@ -1,0 +1,87 @@
+float4 derivX( 
+				float2 fptexCoord, 
+				samplerRECT FPE1 ) 
+{
+	float4 left = { 0.0132999, 0.1080111, 0.2403623, 0.0};
+    float4 right ={ -0.2403623, -0.1080111, -0.0132999, 0.0 };
+
+    float4 leftcolor, rightcolor;
+    leftcolor.x = texRECT(FPE1, fptexCoord+float2(-3,0)).g; 
+    leftcolor.y = texRECT(FPE1, fptexCoord+float2(-2,0)).g; 
+    leftcolor.z = texRECT(FPE1, fptexCoord+float2(-1,0)).g; 
+    leftcolor.w = 0.0;
+    rightcolor.x = texRECT(FPE1, fptexCoord+float2(1,0)).g;
+    rightcolor.y = texRECT(FPE1, fptexCoord+float2(2,0)).g;
+    rightcolor.z = texRECT(FPE1, fptexCoord+float2(3,0)).g;
+    rightcolor.w = 0.0; 
+
+    float4 leftderiv = left.xyzw*leftcolor.xyzw;
+    float4 rightderiv = right.xyzw*rightcolor.xyzw;
+    float4 color =  leftderiv+rightderiv;
+    color.rgb = color.r + color.g + color.b + color.w;
+    color.w = 1.0;
+    color.xyz= color.xyz;
+  
+    return color;
+}
+
+float4 derivY( float2 fptexCoord, samplerRECT FPE1)
+{
+    float4 left = { 0.0132999, 0.1080111, 0.2403623, 0.0};
+//    float4 right ={ -0.2403623, -0.0132999, -0.1080111, 0.0 };
+    float4 right ={ -0.2403623,-0.1080111, -0.0132999, 0.0 };
+
+    float4 leftcolor, rightcolor;
+    leftcolor.x = texRECT(FPE1, fptexCoord+float2(0,-3)).g; 
+    leftcolor.y = texRECT(FPE1, fptexCoord+float2(0,-2)).g; 
+    leftcolor.z = texRECT(FPE1, fptexCoord+float2(0,-1)).g; 
+    leftcolor.w = 0.0;
+    rightcolor.x = texRECT(FPE1, fptexCoord+float2(0,1)).g;
+    rightcolor.y = texRECT(FPE1, fptexCoord+float2(0,2)).g;
+    rightcolor.z = texRECT(FPE1, fptexCoord+float2(0,3)).g;
+    rightcolor.w = 0.0;
+
+    //float4 leftcolor.w = texRECT(FPE1, fptexCoord-float2(-3,0)).y; 
+
+    float4 leftderiv = left.xyzw*leftcolor.xyzw;
+    float4 rightderiv = right.xyzw*rightcolor.xyzw;
+    float4 color =  leftderiv+rightderiv;
+    color.rgb = color.r + color.g + color.b + color.w;
+    color.w = 1.0;
+    //color.xyz= abs(color.xyz);
+    //color.xyz*=float3(12.0,12.0,12.0);
+    return color;
+}
+
+void FragmentProgram(
+    const uniform  float4 thresh ,
+    in float2 fptexCoord : TEXCOORD0,
+    out float4 colorO       : COLOR0,
+    in float4 wpos : WPOS,
+    const uniform samplerRECT FPE1: TEXUNIT0 )
+{   
+
+	float4 dx = derivX( fptexCoord, FPE1 );
+	float4 dy = derivY( fptexCoord, FPE1 );
+	
+	float2 magvec;
+    magvec.x = dx.x*255.0;
+    magvec.y = dy.x*255.0;
+   
+
+    float magnitude = length( magvec ); // [0, sqrt(2)*255 integer] 
+
+    float direction; // lies in [-1.0, 1.0] from arctan below
+    direction = atan2( dy.x, dx.x );
+    direction/=3.14159;
+
+    colorO.x = dx.x*255.0;  
+    colorO.y = dy.x*255.0;  
+    colorO.z = magnitude;
+    colorO.w = direction;
+  
+    if( isnan(direction) ) {
+      colorO = float4(0.0, 0.0, 0.0, 0.0);
+    }
+	
+}

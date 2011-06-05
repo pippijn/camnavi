@@ -1,0 +1,28 @@
+bin_PROGRAMS += folki
+
+folki_SOURCES = # empty
+
+include src/folki/Core/Rules.am
+include src/folki/Cuda/Rules.am
+include src/folki/Gui/Rules.am
+include src/folki/Media/Rules.am
+include src/folki/Motion/Rules.am
+
+folki_CPPFLAGS =			\
+	$(AM_CPPFLAGS)			\
+	-I$(srcdir)/src/folki		\
+	-I$(srcdir)/src/folki/Core	\
+	-I$(srcdir)/src/folki/Cuda	\
+	-I$(srcdir)/src/folki/Gui	\
+	-I$(srcdir)/src/folki/Media	\
+	-I$(srcdir)/src/folki/Motion	\
+	-I$(srcdir)/src/folki/OpenGL	\
+	$(QTOPENGL_CFLAGS)
+folki_LDADD =			\
+	libcutil.la		\
+	$(QTGUI_LIBS)		\
+	$(QTOPENGL_LIBS)	\
+	$(OPENCV_LIBS)		\
+	$(GL_LIBS)		\
+	$(GLEW_LIBS)		\
+	-lcudart

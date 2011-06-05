@@ -1,0 +1,48 @@
+AM_V_MOC = $(am__v_MOC_$(V))
+am__v_MOC_ = $(am__v_MOC_$(AM_DEFAULT_VERBOSITY))
+am__v_MOC_0 = @echo "  MOC   " $@;
+
+AM_V_UIC = $(am__v_UIC_$(V))
+am__v_UIC_ = $(am__v_UIC_$(AM_DEFAULT_VERBOSITY))
+am__v_UIC_0 = @echo "  UIC   " $@;
+
+AM_V_RCC = $(am__v_RCC_$(V))
+am__v_RCC_ = $(am__v_RCC_$(AM_DEFAULT_VERBOSITY))
+am__v_RCC_0 = @echo "  RCC   " $@;
+
+AM_V_CUDA = $(am__v_CUDA_$(V))
+am__v_CUDA_ = $(am__v_CUDA_$(AM_DEFAULT_VERBOSITY))
+am__v_CUDA_0 = @echo "  CUDA  " $@;
+
+
+SUFFIXES = .cu
+
+COMPILE.cu = $(NVCC) $< -o $@ $(AM_CPPFLAGS) -c -O3 -Xcompiler ',"-g","-fno-strict-aliasing","-fPIC"' -arch=sm_11
+
+.cu.o:
+	$(AM_V_CUDA)$(COMPILE.cu)
+
+.cu.lo:
+	$(AM_V_CUDA)$(srcdir)/cudalt $(COMPILE.cu)
+
+%.moc.cpp: %.h
+	@$(MKDIR_P) $(@D)
+	$(AM_V_MOC)$(MOC) -I$(srcdir)/include $< -o $@
+
+%.moc.cpp: %.hh
+	@$(MKDIR_P) $(@D)
+	$(AM_V_MOC)$(MOC) -I$(srcdir)/include $< -o $@
+
+%.moc.cpp: %.hpp
+	@$(MKDIR_P) $(@D)
+	$(AM_V_MOC)$(MOC) -I$(srcdir)/include $< -o $@
+
+%.moc: %.cpp
+	@$(MKDIR_P) $(@D)
+	$(AM_V_MOC)$(MOC) -I$(srcdir)/include $< -o $@
+
+ui_%.h: %.ui
+	$(AM_V_UIC)$(UIC) $< -o $@
+
+prepare: $(SOURCES)
+-include prepare

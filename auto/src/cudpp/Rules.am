@@ -1,0 +1,12 @@
+lib_LTLIBRARIES += libcudpp.la
+
+libcudpp_la_SOURCES =				\
+	src/cudpp/cudpp.cpp			\
+	src/cudpp/cudpp_maximal_launch.cpp	\
+	src/cudpp/cudpp_plan.cpp		\
+	src/cudpp/cudpp_plan_manager.cpp
+
+include src/cudpp/app/Rules.am
+
+libcudpp_la_LIBADD	=	\
+	-lcudart

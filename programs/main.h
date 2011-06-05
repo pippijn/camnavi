@@ -1,6 +1,5 @@
 #include <cstdio>
 
-#include <opencv2/gpu/gpu.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 #include "fast_sift.h"
@@ -20,22 +19,34 @@
 
 using cv::Mat;
 
+#if !NO_VIEW
 static void process (Mat const &src, Mat &dst);
+#else
+static void process (std::string const &name, Mat const &src);
+#endif
 
 int
 main (int argc, char *argv[])
 {
+#if !NO_VIEW
   cv::namedWindow ("source");
   cv::namedWindow ("transformed");
+#endif
 
+#if !NO_VIEW
   bool paused = true;
+#else
+  bool paused = false;
+#endif
   for (int i = 0; i <= 395; i++)
     {
-      char filename[20];
-      sprintf (filename, SRCDIR"/images/%03d.jpg", i);
+      char filename[PATH_MAX];
+      snprintf (filename, sizeof filename, SRCDIR"/images/%03d.jpg", i);
 
-      Mat const src = cv::imread (filename, CV_LOAD_IMAGE_GRAYSCALE);
+      Mat src = cv::imread (filename, CV_LOAD_IMAGE_GRAYSCALE);
+      //equalizeHist (src, src);
       assert (src.size () != cv::Size ());
+#if !NO_VIEW
       Mat dst = Mat::zeros (src.size (), src.type ());
       imshow ("source", src);
 
@@ -44,7 +55,11 @@ main (int argc, char *argv[])
       sprintf (filename, SRCDIR"/output/%03d.jpg", i);
       imwrite (filename, dst);
       imshow ("transformed", dst);
+#else
+      process (filename, src);
+#endif
 
+#if !NO_VIEW
       switch (cv::waitKey (!paused))
         {
         case 'q':
@@ -56,10 +71,13 @@ main (int argc, char *argv[])
           paused = !paused;
           break;
         }
+#endif
     }
 
+#if !NO_VIEW
   cv::destroyWindow ("transformed");
   cv::destroyWindow ("source");
+#endif
 
   return 0;
 }

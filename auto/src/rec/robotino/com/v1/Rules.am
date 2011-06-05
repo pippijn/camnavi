@@ -1,0 +1,8 @@
+librobotino_la_SOURCES +=				\
+	src/rec/robotino/com/v1/Com.moc.cpp		\
+	src/rec/robotino/com/v1/ImageServer.moc.cpp	\
+	src/rec/robotino/com/v1/v1Com.cpp		\
+	src/rec/robotino/com/v1/v1Gripper.cpp		\
+	src/rec/robotino/com/v1/v1ImageServer.cpp
+
+include src/rec/robotino/com/v1/messages/Rules.am

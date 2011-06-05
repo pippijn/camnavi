@@ -3,5 +3,6 @@
 /images*
 /output/*.jpg
 /*.jpg
+/wip
 *.moc.cpp
 *.[od]

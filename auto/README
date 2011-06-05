@@ -1,0 +1,37 @@
+what is it?
+==========
+
+libgroove is a high level Qt API to access data and music on the excellent
+Grooveshark (http://listen.grooveshark.com) service.
+
+is this legal?
+=============
+
+Short version:
+It is probably a good idea to seek legal advice before writing something
+using libgroove.
+
+Long version:
+I am not aware of any legal complications arising from libgroove, but it
+certainly is not wise to expect there to not be any.
+
+I did not reverse-engineer Grooveshark, I based much of my knowledge upon
+the work of earlier pioneers to the field, in particular, Daniel Danopia's
+work on remora (http://github.com/danopia/remora) and Elias Woods' Maemo
+Grooveshark client were both quite useful.
+
+You should very carefully read and take notice of Grooveshark's ToS
+(http://www.grooveshark.com/terms), one thing in particular to keep in mind
+is that Grooveshark explicitly disallow any storage of data from their
+service.
+
+If someone from Grooveshark happens to stumble across this, let me first say
+that I am a great fan of your service. If you are unhappy with libgroove for
+some reason, I am more than happy to work with you to improve on things.
+Feel free to contact me
+
+contact
+=======
+
+All contact regarding this code should go to:
+ robin.burchell@collabora.co.uk

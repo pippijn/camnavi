@@ -1,0 +1,5 @@
+2010-02-09  Pippijn van Steenhoven  <pippijn@xinutec.org>
+
+	* Java sources: Use generics and @Override where possible; upgrade to
+	  junit4.
+	* astdef: Import the right classes; correctly generate java-source.mk

@@ -1,0 +1,21 @@
+lib_LTLIBRARIES += libcutil.la
+
+libcutil_la_SOURCES =				\
+	src/cutil/bank_checker.cpp		\
+	src/cutil/cmd_arg_reader.cpp		\
+	src/cutil/cuda_drvapi_dynlink.c		\
+	src/cutil/cutil.cpp			\
+	src/cutil/multithreading.cpp		\
+	src/cutil/param.cpp			\
+	src/cutil/paramgl.cpp			\
+	src/cutil/rendercheck_gl.cpp		\
+	src/cutil/stopwatch.cpp			\
+	src/cutil/stopwatch_linux.cpp
+
+libcutil_la_LIBADD =	\
+	$(GL_LIBS)	\
+	$(GLU_LIBS)	\
+	$(GLEW_LIBS)	\
+	-lglut		\
+	-lpthread	\
+	-ldl

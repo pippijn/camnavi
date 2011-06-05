@@ -1,0 +1,7 @@
+librobotino_la_SOURCES +=						\
+	src/rec/core_lt/memory/marshall/bigendiandecoderimpl.cpp	\
+	src/rec/core_lt/memory/marshall/bigendianencoderimpl.cpp	\
+	src/rec/core_lt/memory/marshall/decoder.cpp			\
+	src/rec/core_lt/memory/marshall/encoder.cpp			\
+	src/rec/core_lt/memory/marshall/littleendiandecoderimpl.cpp	\
+	src/rec/core_lt/memory/marshall/littleendianencoderimpl.cpp

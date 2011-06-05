@@ -1,0 +1,3 @@
+folki_SOURCES +=			\
+	src/folki/Core/endianness.c	\
+	src/folki/Core/main.cpp

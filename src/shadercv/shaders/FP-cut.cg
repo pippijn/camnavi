@@ -1,0 +1,38 @@
+/**
+ * This file is part of the OpenVIDIA project at http://openvidia.sf.net
+ * Copyright (C) 2004, James Fung
+ *
+ * OpenVIDIA is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenVIDIA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OpenVIDIA; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ **/
+/**
+*bound[0] = x0
+*bound[1] = y0
+*bound[2] = x1
+*bound[3] = y1
+*This will zeros out everything outside the boundary x0 y0 x1 y1
+*/
+void FragmentProgram(
+    const uniform float4 bound,
+    in float2 fptexCoord : TEXCOORD0,
+    out float4 colorO       : COLOR0,
+    in float4 wpos : WPOS,
+    const uniform samplerRECT FPE1: TEXUNIT0 )
+{
+	if(fptexCoord[0]>=bound[0]&&fptexCoord[0]<=bound[2]&&
+	   fptexCoord[1]>=bound[1]&&fptexCoord[1]<=bound[3])
+    		colorO = texRECT(FPE1, fptexCoord);
+	else
+		colorO.xyzw = 0.0; 
+}

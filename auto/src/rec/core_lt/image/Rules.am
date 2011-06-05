@@ -1,0 +1,8 @@
+librobotino_la_SOURCES +=			\
+	src/rec/core_lt/image/bmp.cpp		\
+	src/rec/core_lt/image/conv.cpp		\
+	src/rec/core_lt/image/Image.cpp		\
+	src/rec/core_lt/image/ImageInfo.cpp	\
+	src/rec/core_lt/image/jpeg_dec.cpp	\
+	src/rec/core_lt/image/jpeg_enc.cpp	\
+	src/rec/core_lt/image/Painter.cpp

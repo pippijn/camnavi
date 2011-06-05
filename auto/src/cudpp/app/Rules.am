@@ -1,0 +1,7 @@
+libcudpp_la_SOURCES +=				\
+	src/cudpp/app/compact_app.cu		\
+	src/cudpp/app/radixsort_app.cu		\
+	src/cudpp/app/rand_app.cu		\
+	src/cudpp/app/scan_app.cu		\
+	src/cudpp/app/segmented_scan_app.cu	\
+	src/cudpp/app/spmvmult_app.cu

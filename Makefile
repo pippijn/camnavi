@@ -1,15 +1,13 @@
-PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 opencv x11 gl glew IL
+PKGS = QtCore QtNetwork QtXml ImageMagick++ fftw3 opencv x11 gl glew IL libccgnu2 glu
 
 CXXFLAGS	:= -MD -fPIC -O0 -mfpmath=sse -march=native -fno-inline -Wall -ggdb3
 CFLAGS		:= -MD -fPIC -O3 -mfpmath=sse -march=native -fno-inline -ggdb3
-CPPFLAGS	:= -Isrc -Isrc/cudpp -Isrc/navi
-CPPFLAGS	+= -DTIXML_USE_TICPP -D__LINUX__ -w
-CPPFLAGS	+= -DCL_SIFTGPU_ENABLED
-CPPFLAGS	+= -DCUDA_SIFTGPU_ENABLED
-CPPFLAGS	+= -DSRCDIR='"$(PWD)"'
+CPPFLAGS	:= -Isrc -Isrc/cudpp -Isrc/navi -Isrc/shadercv/include
+CPPFLAGS	+= -DSRCDIR='"$(PWD)"' -include "config.h"
 PKGFLAGS	+= $(shell pkg-config $(PKGS) --cflags)
 
 LDFLAGS		:= -lpthread -lboost_system-mt -lboost_thread-mt -lboost_date_time-mt -lopencv_gpu -lcudart -lOpenCL
+LDFLAGS		+= -lCg -lCgGL -lglut $(shell imlib2-config --libs)
 LDFLAGS		+= $(shell pkg-config $(PKGS) --libs)
 
 LIBS		:= $(patsubst src/%,bin/lib%.so,$(wildcard src/*))

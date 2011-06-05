@@ -1,0 +1,25 @@
+librobotino_la_SOURCES +=				\
+	src/rec/robotino/com/Actor.cpp			\
+	src/rec/robotino/com/AnalogInput.cpp		\
+	src/rec/robotino/com/Bumper.cpp			\
+	src/rec/robotino/com/Camera.cpp			\
+	src/rec/robotino/com/Com.cpp			\
+	src/rec/robotino/com/ComId.cpp			\
+	src/rec/robotino/com/ComImpl.cpp		\
+	src/rec/robotino/com/ComImpl.moc.cpp		\
+	src/rec/robotino/com/DigitalInput.cpp		\
+	src/rec/robotino/com/DigitalOutput.cpp		\
+	src/rec/robotino/com/DistanceSensor.cpp		\
+	src/rec/robotino/com/EncoderInput.cpp		\
+	src/rec/robotino/com/Gripper.cpp		\
+	src/rec/robotino/com/Info.cpp			\
+	src/rec/robotino/com/JPGCamera.cpp		\
+	src/rec/robotino/com/Motor.cpp			\
+	src/rec/robotino/com/NorthStar.cpp		\
+	src/rec/robotino/com/Odometry.cpp		\
+	src/rec/robotino/com/OmniDrive.cpp		\
+	src/rec/robotino/com/PowerManagement.cpp	\
+	src/rec/robotino/com/PowerOutput.cpp		\
+	src/rec/robotino/com/Relay.cpp
+
+include src/rec/robotino/com/v1/Rules.am

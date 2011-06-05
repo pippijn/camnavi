@@ -1,0 +1,3 @@
+include src/rec/iocontrol/remotestate/Rules.am
+include src/rec/iocontrol/robotstate/Rules.am
+include src/rec/iocontrol/sercom/Rules.am

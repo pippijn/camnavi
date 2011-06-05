@@ -1,0 +1,37 @@
+bin_PROGRAMS += reconstruct
+
+reconstruct_SOURCES =					\
+	src/bin/reconstruct/analyser.cpp		\
+	src/bin/reconstruct/analyserthread.cpp		\
+	src/bin/reconstruct/analyserthread.moc.cpp	\
+	src/bin/reconstruct/glplane.cpp			\
+	src/bin/reconstruct/imagefeeder.cpp		\
+	src/bin/reconstruct/qmlcontroller.cpp		\
+	src/bin/reconstruct/qmlcontroller.moc.cpp	\
+	src/bin/reconstruct/reconstruct.cpp		\
+	src/bin/reconstruct/sift.cpp			\
+	src/bin/reconstruct/siftview.cpp		\
+	src/bin/reconstruct/siftview.moc		\
+	src/bin/reconstruct/siftview.moc.cpp
+
+reconstruct_CPPFLAGS =		\
+	$(AM_CPPFLAGS)		\
+	$(GL_CFLAGS)		\
+	$(GLU_CFLAGS)		\
+	$(OPENCV_CFLAGS)	\
+	$(QT3D_CFLAGS)		\
+	$(QT3DQUICK_CFLAGS)	\
+	$(QTDECLARATIVE_CFLAGS)	\
+	$(QTGUI_CFLAGS)		\
+	$(QTOPENGL_CFLAGS)
+reconstruct_LDADD =		\
+	libresources.la		\
+	libsiftgpu.la		\
+	$(GL_LIBS)		\
+	$(GLU_LIBS)		\
+	$(OPENCV_LIBS)		\
+	$(QT3D_LIBS)		\
+	$(QT3DQUICK_LIBS)	\
+	$(QTDECLARATIVE_LIBS)	\
+	$(QTGUI_LIBS)		\
+	$(QTOPENGL_LIBS)

@@ -1,0 +1,5 @@
+librobotino_la_SOURCES +=				\
+	src/rec/robotino/imagesender/Manager.cpp	\
+	src/rec/robotino/imagesender/Manager.moc.cpp	\
+	src/rec/robotino/imagesender/Sender.cpp		\
+	src/rec/robotino/imagesender/Sender.moc.cpp

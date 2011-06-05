@@ -1,0 +1,42 @@
+void FragmentProgram(
+    in  float2 fptexCoord   : TEXCOORD0,
+    out float4 colorO       : COLOR0 ,
+    const uniform samplerRECT FPE0: TEXUNIT0 )
+
+{
+   // weights for a 4x1 gaussian filter
+   // here just one half is shown (its symmetric)
+// octave:4> gaussian(16)./sum(gaussian(16))
+//ans =
+
+   float weights[16] = { 
+  2.4343e-13,
+   2.6696e-10,
+   1.0770e-07,
+   1.5984e-05,
+   8.7268e-04,
+   1.7528e-02,
+   1.2952e-01,
+   3.5207e-01,
+   3.5207e-01,
+   1.2952e-01,
+   1.7528e-02,
+   8.7268e-04,
+   1.5984e-05,
+   1.0770e-07,
+   2.6696e-10,
+   2.4343e-13
+  };
+
+   int i=0 ;
+   float4 accum = {0.0,0.0,0.0,0.0};
+   float4 samp;
+    
+   for( i=0 ; i<16 ; i++ ) { 
+     accum += weights[i].xxxx*texRECT(FPE0,fptexCoord+float2(0.0,i-8));
+   }
+
+   colorO = accum;
+
+  
+}

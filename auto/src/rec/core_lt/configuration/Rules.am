@@ -1,0 +1,2 @@
+librobotino_la_SOURCES +=				\
+	src/rec/core_lt/configuration/Configuration.cpp

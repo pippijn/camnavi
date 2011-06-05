@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/widgets">
+        <file alias="SIFT.qml">widgets/SIFT.qml</file>
+    </qresource>
+</RCC>

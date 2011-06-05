@@ -1,0 +1,5 @@
+folki_SOURCES +=					\
+	src/folki/Motion/FolkiOpticalFlow.cpp		\
+	src/folki/Motion/FolkiOpticalFlow.moc.cpp	\
+	src/folki/Motion/OpticalFlow.cpp		\
+	src/folki/Motion/OpticalFlow.moc.cpp
