@@ -1,0 +1,3 @@
+librobotino_la_SOURCES +=				\
+	src/rec/serialport/SerialPort.cpp		\
+	src/rec/serialport/SerialPortImpl_linux.cpp

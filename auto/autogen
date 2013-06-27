@@ -1,0 +1,9 @@
+#!/bin/sh
+
+mkdir -p autoconf
+echo " + libtoolize"    && libtoolize
+echo " + aclocal"       && aclocal -Wall -I m4
+echo " + autoheader"    && autoheader -Wall
+echo " + automake"      && automake -Wall --add-missing
+echo " + autoconf"      && autoconf -Wall
+#./configure --prefix=$PWD/prefix --enable-bytecode --enable-native --disable-shared "$@"

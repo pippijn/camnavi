@@ -1,0 +1,20 @@
+lib_LTLIBRARIES += libresources.la
+
+QRC =						\
+	$(srcdir)/res/icons.qrc			\
+	$(srcdir)/res/images.qrc		\
+	$(srcdir)/res/meshes.qrc		\
+	$(srcdir)/res/views.qrc			\
+	$(srcdir)/res/widgets.qrc
+RESOURCES =					\
+	res/meshes/teapot.bez			\
+	res/views/mainwindow.qml		\
+	res/widgets/SIFT.qml
+EXTRA_DIST += $(QRC) $(RESOURCES)
+
+nodist_libresources_la_SOURCES =		\
+	resources.cpp
+
+resources.cpp: $(QRC) $(RESOURCES)
+	$(AM_V_RCC)$(RCC) $(QRC) > $@		\
+	    || ($(RM) $@ && false)

@@ -1,0 +1,52 @@
+/**
+ * This file is part of the OpenVIDIA project at http://openvidia.sf.net
+ * Copyright (C) 2004, James Fung
+ *
+ * OpenVIDIA is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenVIDIA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OpenVIDIA; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ **/
+void FragmentProgram(
+    in float2 fptexCoord : TEXCOORD0,
+    out float4 colorO       : COLOR0,
+    in float4 wpos : WPOS,
+    const uniform samplerRECT FPE1: TEXUNIT0 )
+{
+
+   float4x4 samples ;
+
+   //float2 mypos = wpos;
+   float2 mypos = fptexCoord;
+   fptexCoord = mypos.yx * float2(0.25, 4.0  );
+   
+
+   samples._m00_m01_m02_m03 =  texRECT(FPE1, fptexCoord.xy);
+   samples._m10_m11_m12_m13 =  texRECT(FPE1, fptexCoord.xy + float2(0,1));
+   samples._m20_m21_m22_m23 =  texRECT(FPE1, fptexCoord.xy + float2(0,2));
+   samples._m30_m31_m32_m33 =  texRECT(FPE1, fptexCoord.xy + float2(0,3));
+
+   int pos = (int)(floor(mypos.y))  % 4;
+
+   if( pos == 0 ) colorO = samples._m00_m10_m20_m30;
+   else if( pos == 1 ) colorO = samples._m01_m11_m21_m31;
+   else if( pos == 2 ) colorO = samples._m02_m12_m22_m32;
+   else if( pos == 3 ) colorO = samples._m03_m13_m23_m33;
+/*
+   if( pos == 0 ) colorO = 0;
+   else if( pos == 1 ) colorO = float4(1.0,0.0,0.0,1.0);
+   else if( pos == 2 ) colorO = float4(0.0,1.0,0.0,1.0);
+   else if( pos == 3 ) colorO = float4(0.0,0.0,1.0,1.0);
+   colorO =floor(wpos.y)/600;
+*/
+   //colorO =floor(wpos.x)/600;
+}

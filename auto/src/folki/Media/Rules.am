@@ -1,0 +1,3 @@
+folki_SOURCES +=				\
+	src/folki/Media/MediaPlayer.moc.cpp	\
+	src/folki/Media/MediaPlayer.cpp

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/meshes">
+        <file alias="teapot.bez">meshes/teapot.bez</file>
+    </qresource>
+</RCC>

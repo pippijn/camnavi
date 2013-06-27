@@ -1,0 +1,32 @@
+void FragmentProgram(
+    in  float2 fptexCoord   : TEXCOORD0,
+    out float4 colorO       : COLOR0 ,
+    const uniform samplerRECT FPE0: TEXUNIT0 )
+
+{
+   // weights for a 9x1 gaussian filter
+   // here just one half is shown (its symmetric)
+   // so the index into weights[] can be the 
+   // distance from the centre
+   float weights[5] = { 
+      0.398943469356097757,
+      0.241971445656600725,
+      0.053991127420704409,
+      0.004431861620031266,
+      0.000133830624614742
+   };
+
+
+   colorO  = texRECT(FPE0,fptexCoord + float2(-4.0, 0.0) );
+   colorO += texRECT(FPE0,fptexCoord + float2(-3.0, 0.0) );
+   colorO += texRECT(FPE0,fptexCoord + float2(-2.0, 0.0) );
+   colorO += texRECT(FPE0,fptexCoord + float2(-1.0, 0.0) );
+   colorO += texRECT(FPE0,fptexCoord );
+   colorO += texRECT(FPE0,fptexCoord + float2(+1.0, 0.0) );
+   colorO += texRECT(FPE0,fptexCoord + float2(+2.0, 0.0) );
+   colorO += texRECT(FPE0,fptexCoord + float2(+3.0, 0.0) );
+   colorO += texRECT(FPE0,fptexCoord + float2(+4.0, 0.0) );
+   colorO = colorO/9.0;
+
+  
+}

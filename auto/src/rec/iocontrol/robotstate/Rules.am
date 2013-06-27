@@ -1,0 +1,4 @@
+librobotino_la_SOURCES +=				\
+	src/rec/iocontrol/robotstate/Decoder.cpp	\
+	src/rec/iocontrol/robotstate/Encoder.cpp	\
+	src/rec/iocontrol/robotstate/State.cpp

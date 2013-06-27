@@ -1,0 +1,18 @@
+lib_LTLIBRARIES += libgpusurf.la
+
+libgpusurf_la_SOURCES =					\
+	src/gpusurf/GpuIntegralImage.cpp		\
+	src/gpusurf/GpuIntegralImage_kernel.cpp		\
+	src/gpusurf/GpuIntegralImageProcessor.cpp	\
+	src/gpusurf/GpuSurfDetector.cpp			\
+	src/gpusurf/GpuSurfDetectorInternal.cpp		\
+	src/gpusurf/GpuSurfFeatures.cpp			\
+	src/gpusurf/GpuSurfOctave.cpp			\
+	src/gpusurf/detector.cpp			\
+	src/gpusurf/gpu_area.cpp			\
+	src/gpusurf/gpu_globals.cpp			\
+	src/gpusurf/gpusurf.cu
+
+libgpusurf_la_LIBADD	=	\
+	libcudpp.la		\
+	-lcudart

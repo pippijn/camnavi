@@ -1,0 +1,18 @@
+folki_SOURCES +=				\
+	src/folki/Gui/FlotRender.cpp		\
+	src/folki/Gui/FlotRender.moc.cpp	\
+	src/folki/Gui/LiGL2Dwidget.cpp		\
+	src/folki/Gui/LiGL2Dwidget.moc.cpp	\
+	src/folki/Gui/LkCvWidget.cpp		\
+	src/folki/Gui/LkCvWidget.moc.cpp	\
+	src/folki/Gui/mainwindows.moc.cpp	\
+	src/folki/Gui/paramsFolki.cpp		\
+	src/folki/Gui/paramsFolki.moc.cpp
+
+UI_FILES =			\
+	ui_paramsFolki.h
+
+BUILT_SOURCES += $(UI_FILES)
+CLEANFILES += $(UI_FILES)
+
+VPATH += $(srcdir)/src/folki/Gui

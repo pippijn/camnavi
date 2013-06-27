@@ -1,0 +1,14 @@
+folki_SOURCES +=					\
+	src/folki/Cuda/ConvolutionSeparable.cu		\
+	src/folki/Cuda/ConvolutionSeparableFlat.cu	\
+	src/folki/Cuda/ConvolutionSeparableFlatU.cu	\
+	src/folki/Cuda/ConvolutionSeparableU.cu		\
+	src/folki/Cuda/DeriveGradient.cu		\
+	src/folki/Cuda/DivRot.cu			\
+	src/folki/Cuda/FolkiOpticalFlowKernels.cu	\
+	src/folki/Cuda/Morpho.cu			\
+	src/folki/Cuda/Propage.cu			\
+	src/folki/Cuda/PyramidBurt.cu			\
+	src/folki/Cuda/PyramidHaar.cu			\
+	src/folki/Cuda/Reduction.cu			\
+	src/folki/Cuda/RenderGL.cu

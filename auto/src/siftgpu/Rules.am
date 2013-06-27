@@ -1,0 +1,30 @@
+lib_LTLIBRARIES += libsiftgpu.la
+
+libsiftgpu_la_SOURCES =				\
+	src/siftgpu/CLTexImage.cpp		\
+	src/siftgpu/CuTexImage.cpp		\
+	src/siftgpu/FrameBufferObject.cpp	\
+	src/siftgpu/GlobalUtil.cpp		\
+	src/siftgpu/GLTexImage.cpp		\
+	src/siftgpu/ProgramCG.cpp		\
+	src/siftgpu/ProgramCL.cpp		\
+	src/siftgpu/ProgramCU.cu		\
+	src/siftgpu/ProgramGLSL.cpp		\
+	src/siftgpu/ProgramGPU.cpp		\
+	src/siftgpu/PyramidCL.cpp		\
+	src/siftgpu/PyramidCU.cpp		\
+	src/siftgpu/PyramidGL.cpp		\
+	src/siftgpu/ShaderMan.cpp		\
+	src/siftgpu/SiftGPU.cpp			\
+	src/siftgpu/SiftMatch.cpp		\
+	src/siftgpu/SiftMatchCU.cpp		\
+	src/siftgpu/SiftPyramid.cpp
+
+libsiftgpu_la_LIBADD =	\
+	$(GL_LIBS)	\
+	$(GLEW_LIBS)	\
+	$(IL_LIBS)	\
+	$(X11_LIBS)	\
+	-lcudart
+
+include src/siftgpu/gui/Rules.am

@@ -1,0 +1,3 @@
+librobotino_la_SOURCES +=				\
+	src/rec/iocontrol/remotestate/SensorState.cpp	\
+	src/rec/iocontrol/remotestate/SetState.cpp

@@ -1,0 +1,18 @@
+librobotino_la_SOURCES +=		\
+	src/rec/core_lt/Color.cpp	\
+	src/rec/core_lt/Log.cpp		\
+	src/rec/core_lt/String.cpp	\
+	src/rec/core_lt/StringList.cpp	\
+	src/rec/core_lt/Timer_linux.cpp	\
+	src/rec/core_lt/Timer_win.cpp	\
+	src/rec/core_lt/Variant.cpp	\
+	src/rec/core_lt/VariantId.cpp	\
+	src/rec/core_lt/enumser.cpp	\
+	src/rec/core_lt/fileutils.cpp	\
+	src/rec/core_lt/uconv.cpp	\
+	src/rec/core_lt/utils.cpp	\
+	src/rec/core_lt/utils_win32.cpp
+
+include src/rec/core_lt/configuration/Rules.am
+include src/rec/core_lt/image/Rules.am
+include src/rec/core_lt/memory/Rules.am

@@ -1,0 +1,81 @@
+void FragmentProgram(
+    in  float2 fptexCoord   : TEXCOORD7,
+    out float4 colorO       : COLOR0 ,
+    const uniform samplerRECT FPE0: TEXUNIT0 )
+
+{
+   // weights for a 4x1 gaussian filter
+   // here just one half is shown (its symmetric)
+// octave:4> gaussian(16)./sum(gaussian(16))
+//ans =
+
+   float4 weights1 = { 
+   2.4343e-13,
+   2.6696e-10,
+   1.0770e-07,
+   1.5984e-05 };
+
+   float4 weights2 = { 
+   8.7268e-04,
+   1.7528e-02,
+   1.2952e-01,
+   3.5207e-01
+  };
+
+   float4 temp1, temp2, temp3, temp4;
+
+   float4 accum = {0.0,0.0,0.0,0.0};
+   float4 output;
+    
+   float4 samp1 = texRECT(FPE0,fptexCoord+float2(-1,0.0));
+   float4 samp2 = texRECT(FPE0,fptexCoord+float2(0,0.0));
+   float4 samp3 = texRECT(FPE0,fptexCoord+float2( 1.0,0.0));
+   float4 samp4 = texRECT(FPE0,fptexCoord+float2( 2.0,0.0));
+   float4 samp5 = texRECT(FPE0,fptexCoord+float2( 3.0,0.0));
+
+   accum += weights1*samp1;
+   accum += weights2*samp2;
+   accum += weights2.abgr*samp3;
+   accum += weights1.abgr*samp4;
+   //output.x = accum.x+accum.y+accum.z+accum.w;
+   temp1.x = accum.x;
+   temp2.x = accum.y;
+   temp3.x = accum.z;
+   temp4.x = accum.w;
+
+   accum.xyzw = 0.0;
+   accum += weights1*float4(samp1.yzw, samp2.x);
+   accum += weights2*float4(samp2.yzw, samp3.x);
+   accum += weights2.abgr*float4(samp3.yzw, samp4.x);
+   accum += weights1.abgr*float4(samp4.yzw, samp5.x);
+   //output.y = accum.x+accum.y+accum.z+accum.w;
+   temp1.y = accum.x;
+   temp2.y = accum.y;
+   temp3.y = accum.z;
+   temp4.y = accum.w;
+
+   accum.xyzw = 0.0;
+   accum += weights1*float4(samp1.zw, samp2.xy);
+   accum += weights2*float4(samp2.zw, samp3.xy);
+   accum += weights2.abgr*float4(samp3.zw, samp4.xy);
+   accum += weights1.abgr*float4(samp4.zw, samp5.xy);
+   //output.z = accum.x+accum.y+accum.z+accum.w;
+   temp1.z = accum.x;
+   temp2.z = accum.y;
+   temp3.z = accum.z;
+   temp4.z = accum.w;
+
+   accum.xyzw = 0.0;
+   accum += weights1*float4(samp1.w, samp2.xyz);
+   accum += weights2*float4(samp2.w, samp3.xyz);
+   accum += weights2.abgr*float4(samp3.w, samp4.xyz);
+   accum += weights1.abgr*float4(samp4.w, samp5.xyz);
+   //output.w = accum.x+accum.y+accum.z+accum.w;
+   temp1.w = accum.x;
+   temp2.w = accum.y;
+   temp3.w = accum.z;
+   temp4.w = accum.w;
+
+   colorO = temp1+temp2+temp3+temp4;
+}
+

@@ -1,0 +1,2 @@
+libsiftgpu_la_SOURCES +=			\
+	src/siftgpu/gui/BasicTestWin.cpp

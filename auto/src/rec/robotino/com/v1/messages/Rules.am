@@ -1,0 +1,5 @@
+librobotino_la_SOURCES +=					\
+	src/rec/robotino/com/v1/messages/v1CameraControl.cpp	\
+	src/rec/robotino/com/v1/messages/v1Info.cpp		\
+	src/rec/robotino/com/v1/messages/v1IOControl.cpp	\
+	src/rec/robotino/com/v1/messages/v1IOStatus.cpp

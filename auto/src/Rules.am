@@ -1,0 +1,10 @@
+include src/bin/Rules.am
+include src/cudpp/Rules.am
+include src/gpusurf/Rules.am
+include src/navi/Rules.am
+include src/rec/Rules.am
+include src/siftgpu/Rules.am
+include src/sift/Rules.am
+include src/ticpp/Rules.am
+include src/folki/Rules.am
+include src/cutil/Rules.am

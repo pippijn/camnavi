@@ -1,0 +1,8 @@
+librobotino_la_SOURCES +=				\
+	src/rec/core_lt/memory/Allocator.cpp		\
+	src/rec/core_lt/memory/ByteArrayConst.cpp	\
+	src/rec/core_lt/memory/ByteArray.cpp		\
+	src/rec/core_lt/memory/DataStream.cpp		\
+	src/rec/core_lt/memory/FileIO.cpp
+
+include src/rec/core_lt/memory/marshall/Rules.am

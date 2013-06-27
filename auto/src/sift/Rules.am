@@ -1,0 +1,16 @@
+lib_LTLIBRARIES += libsift.la
+
+libsift_la_SOURCES =		\
+	src/sift/imgfeatures.c	\
+	src/sift/kdtree.c	\
+	src/sift/minpq.c	\
+	src/sift/sift.c		\
+	src/sift/utils.c	\
+	src/sift/xform.c
+
+libsift_la_CPPFLAGS =		\
+	$(AM_CPPFLAGS)		\
+	$(OPENCV_CFLAGS)
+libsift_la_LIBADD =		\
+	$(OPENCV_LIBS)		\
+	-lm

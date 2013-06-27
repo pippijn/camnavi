@@ -1,0 +1,3 @@
+librobotino_la_SOURCES +=		\
+	src/rec/nstar/Com.cpp		\
+	src/rec/nstar/ComImpl.cpp

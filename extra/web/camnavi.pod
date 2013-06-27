@@ -1,0 +1,3 @@
+=head1 Camera based robot navigation
+
+L<Git repository|http://xinutec.org/git/robotics/camnavi.git/>

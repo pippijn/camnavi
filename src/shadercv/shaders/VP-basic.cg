@@ -1,0 +1,53 @@
+/**
+ * This file is part of the OpenVIDIA project at http://openvidia.sf.net
+ * Copyright (C) 2004, James Fung
+ *
+ * OpenVIDIA is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenVIDIA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OpenVIDIA; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ **/
+
+void FragmentProgram( out float4 output : POSITION , 
+                      in  float4  input  : POSITION ,
+                      in float4 colorIn : COLOR0, 
+                      uniform float4x4 ModelViewProj, 
+                      out float4 colorOut : COLOR0 )
+      
+{
+  colorOut = colorIn;
+
+  //input.w=1.0;
+//  output = mul( input, ModelViewProj );
+
+  // output.y is the distance of the line to origin.
+  output = mul( ModelViewProj, input );
+  float4 tmp =  mul( ModelViewProj, input);
+
+  //output.y += (output.z * input.z) ;//mask increment Y a.k.a. r
+  output.y = tmp.z*input.z + tmp.y*input.w;
+
+  // scale Y so it lands in [0,1]
+  // for scaled input, max is 1,1 so 1.414 is max 
+  // distance to that point,
+  // otherwise sqrt( (4/3)^2 + 1 ) = 1.6667
+  output.y /= 1.666666666666666667;
+  output.y = -output.y;
+
+  //output.x is the theta (angle of the perpendicular line connecting 
+  //      origin to houghline )
+  output.x*=2.0;
+  output.x-=1.0;
+
+  output.z = 0.0;
+  output.w = 1.0; //? speeds it up??
+}

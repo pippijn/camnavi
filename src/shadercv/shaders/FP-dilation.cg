@@ -1,0 +1,43 @@
+/**
+float data [ 2 0 0 8 ] [ 2 0 0 8 ] , r e s u l t [ 2 0 0 0 ] [ 2 0 0 0 ] ;
+f o r ( i n t y = 0 ; y < 2000; ++ y ) {
+    f o r ( i n t x = 0 ; x < 2000; ++ x ) {
+        f l o a t min = 9 9 9 9 . 0 ;
+        f o r ( i n t b = 0 ; b <= 8; ++ b ) {
+            f o r ( i n t a = 0 ; a <= 8; ++ a ) {
+                f l o a t tmp = data [ y + b ] [ x + a ] ;
+                i f ( tmp < min ) {
+                    min = tmp ;
+                }
+            }
+        }
+        r e s u l t [ y ] [ x ] = min ;
+    }
+}
+**/
+void FragmentProgram(
+    const uniform float windowsSize=3,
+    in float2 fptexCoord : TEXCOORD0,
+    out float4 colorO       : COLOR0,
+    in float4 wpos : WPOS,
+    const uniform samplerRECT FPE1: TEXUNIT0 )
+{
+    float4 color;
+    float max= 0.0;
+    for(int i=-windowsSize; i<=windowsSize; i++){
+        for(int j=-windowsSize; j<=windowsSize; j++){
+            float2 coor={fptexCoord[0]+i, fptexCoord[1]+j};
+            color = texRECT(FPE1, coor);
+            if(color.x > max){
+                max = color.x;
+            }
+        }
+    }
+    if( max != 1 ) {
+        colorO.xyzw = 0.0;
+    } else {
+        colorO.xyzw = 1.0;
+    }
+ 
+    //colorO = texRECT(FPE1, fptexCoord);
+}

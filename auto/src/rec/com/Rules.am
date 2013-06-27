@@ -1,0 +1,5 @@
+librobotino_la_SOURCES +=		\
+	src/rec/com/udpreceiver.cpp	\
+	src/rec/com/udpreceiverimpl.cpp	\
+	src/rec/com/udpsender.cpp	\
+	src/rec/com/udpsenderimpl.cpp

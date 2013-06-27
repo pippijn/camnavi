@@ -1,0 +1,20 @@
+================================= groovy-uic =================================
+- search for title/album/artist
+- filter search results
+- status indicator for unfinished songs
+- grooveshark user login
+- use QNetworkAccessManager to download cover art instead of wget
+- write an abstraction for QSettings that holds the settings strongly typed
+- play tracks in sorted order (as they were added to the playlist)
+- KILL IT! (we're not going to develop this any further, I think)
+
+================================= groovy-man =================================
+- everything
+
+================================= groovy-qml =================================
+- autocompletion
+- playlist
+
+================================== libgroove =================================
+- implement a media player on top of (not inside) the playlist model
+  not using phonon (perhaps QMediaPlayer)

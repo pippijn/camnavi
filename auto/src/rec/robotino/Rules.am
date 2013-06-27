@@ -1,0 +1,2 @@
+include src/rec/robotino/com/Rules.am
+include src/rec/robotino/imagesender/Rules.am

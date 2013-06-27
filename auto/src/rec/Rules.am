@@ -1,0 +1,22 @@
+lib_LTLIBRARIES += librobotino.la
+
+librobotino_la_SOURCES = # empty
+
+include src/rec/com/Rules.am
+include src/rec/core_lt/Rules.am
+include src/rec/iocontrol/Rules.am
+include src/rec/robotino/Rules.am
+include src/rec/serialport/Rules.am
+
+librobotino_la_CPPFLAGS =	\
+	$(AM_CPPFLAGS)		\
+	$(MAGICK_CFLAGS)	\
+	$(QTNETWORK_CFLAGS)
+librobotino_la_LIBADD =		\
+	libticpp.la		\
+	$(MAGICK_LIBS)		\
+	$(QTNETWORK_LIBS)	\
+	-lboost_date_time-mt	\
+	-lboost_system-mt	\
+	-lboost_thread-mt	\
+	-lpthread

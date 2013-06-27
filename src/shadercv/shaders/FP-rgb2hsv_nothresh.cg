@@ -1,0 +1,108 @@
+/**
+ * This file is part of the OpenVIDIA project at http://openvidia.sf.net
+ * Copyright (C) 2004, James Fung
+ *
+ * OpenVIDIA is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenVIDIA is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OpenVIDIA; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ **/
+
+/*
+http://www.cs.rit.edu/~ncs/color/t_convert.html
+// r,g,b values are from 0 to 1
+// h = [0,360], s = [0,1], v = [0,1]
+//        if s == 0, then h = -1 (undefined)
+void RGBtoHSV( float r, float g, float b, float *h, float *s, float *v )
+{
+     float min, max, delta;
+
+     min = MIN( r, g, b );
+     max = MAX( r, g, b );
+     *v = max;                // v
+
+     delta = max - min;
+
+     if( max != 0 )
+          *s = delta / max;        // s
+     else {
+          // r = g = b = 0         // s = 0, v is undefined
+          *s = 0;
+          *h = -1;
+          return;
+     }
+
+     if( r == max )
+          *h = ( g - b ) / delta;       // between yellow & magenta
+     else if( g == max )
+          *h = 2 + ( b - r ) / delta;   // between cyan & yellow
+     else
+          *h = 4 + ( r - g ) / delta;   // between magenta & cyan
+
+     *h *= 60;                // degrees
+     if( *h < 0 )
+          *h += 360;
+
+}
+*/
+/**
+* thresh.x = the hue value.
+* thresh.y = the absolute difference.
+* thresh.z = ...
+*/
+void FragmentProgram(
+    const uniform  float4 thresh,
+    in float2 fptexCoord : TEXCOORD0,
+    out float4 colorO       : COLOR0,
+    in float4 wpos : WPOS,
+    const uniform samplerRECT FPE1: TEXUNIT0 )
+{
+	
+    float4 color = texRECT(FPE1, fptexCoord); 
+    float4 hsv;
+    float minval, maxval, delta;
+
+    minval = min( color.x, color.y);
+    minval = min( minval, color.z);
+
+    maxval = max( color.x, color.y);
+    maxval = max( maxval, color.z);
+
+    hsv.z = maxval;        // set v
+    delta = maxval - minval;
+    
+    if(maxval!=0.0){
+    	hsv.y = delta/maxval;  // set s
+	}else{
+		hsv.y=0.0;
+		hsv.x=0.0;
+	}
+                           // set  h
+    if( color.r == maxval ) 
+      hsv.x = ( color.g - color.b )/delta;
+    else if( color.g == maxval ) 
+      hsv.x = 2 + (color.b - color.r )/delta;
+    else
+      hsv.x = 4 + (color.r - color.g )/delta;
+
+    hsv.x *= 60.0;
+    if( hsv.x < 0 )
+    	hsv.x += 360.0;
+   
+    hsv.x = hsv.x/360.0; //normalize angle
+   
+    colorO.xyz = hsv.xyz;
+    colorO.w = 0.0;
+}
+//strategy: ideally, fall off around calibrated hue.
+///         satruation should be goo,d more is better
+///         track value dynamiclly, it changes.

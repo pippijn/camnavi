@@ -1,0 +1,35 @@
+lib_LTLIBRARIES += libnavi.la
+
+libnavi_la_SOURCES =			\
+	src/navi/fast_sift.cpp		\
+	src/navi/fourier_dft.cpp	\
+	src/navi/fourier_fft.cpp	\
+	src/navi/fourier_util.cpp	\
+	src/navi/goodfeatures.cpp	\
+	src/navi/gpusift.cpp		\
+	src/navi/gpusurf.cpp		\
+	src/navi/hough.cpp		\
+	src/navi/imagereceiver.cpp	\
+	src/navi/mser.cpp		\
+	src/navi/phase_correlation.cpp	\
+	src/navi/phase_correlation_impl.c	\
+	src/navi/robot.cpp		\
+	src/navi/sift.cpp		\
+	src/navi/stardetector.cpp	\
+	src/navi/surf_analyser.cpp	\
+	src/navi/surf.cpp		\
+	src/navi/timer.cpp
+
+libnavi_la_CPPFLAGS =		\
+	$(AM_CPPFLAGS)		\
+	$(FFTW3_CFLAGS)		\
+	$(OPENCV_CFLAGS)	\
+	#
+libnavi_la_LIBADD =		\
+	libgpusurf.la		\
+	librobotino.la		\
+	libsiftgpu.la		\
+	libsift.la		\
+	$(OPENCV_LIBS)		\
+	$(FFTW3_LIBS)		\
+	#
